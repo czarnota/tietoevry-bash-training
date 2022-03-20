@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="504" height="160">
+    <style>
+        line, path, circle, rect, polygon{stroke:black;stroke-width:1;stroke-opacity:1;fill-opacity:1;stroke-linecap:round;stroke-linejoin:miter;}text{font-family:Iosevka Fixed, monospace;font-size:14px;}rect.backdrop{stroke:none;fill:white;}.broken{stroke-dasharray:8;}.filled{fill:black;}.bg_filled{fill:white;}.nofill{fill:white;}.end_marked_arrow{marker-end:url(#arrow);}.start_marked_arrow{marker-start:url(#arrow);}.end_marked_diamond{marker-end:url(#diamond);}.start_marked_diamond{marker-start:url(#diamond);}.end_marked_circle{marker-end:url(#circle);}.start_marked_circle{marker-start:url(#circle);}.end_marked_open_circle{marker-end:url(#open_circle);}.start_marked_open_circle{marker-start:url(#open_circle);}.end_marked_big_open_circle{marker-end:url(#big_open_circle);}.start_marked_big_open_circle{marker-start:url(#big_open_circle);}
+        <!--separator-->
+        .o{  fill: #FF9800;  }
+.c{  fill: #00BCD4;  }
+.m{  fill: #9C27B0;  }
+.b{  fill: #280071;  }
+.r{  fill: #F9423A;  }
+.v{  fill: #B1B5CE;  }
+.p{  fill: #EACBBB;  }
+.db{  fill: #071D49;  }
+.bn{  fill: #633231;  }
+.dw{  fill: #53565A;  }
+.ddw{  fill: #6E6259;  }
+.g{  fill: #26D07C;  }
+.y{  fill: #E9EC6B;  }
+.k{  fill: #000000;  }
+.w{  fill: #FFFFFF;  }
+    </style>
+    <defs>
+        <marker id="arrow" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <polygon points="0,0 0,4 4,2 0,0"></polygon>
+        </marker>
+        <marker id="diamond" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <polygon points="0,2 2,0 4,2 2,4 0,2"></polygon>
+        </marker>
+        <marker id="circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <circle cx="4" cy="4" r="2" class="filled"></circle>
+        </marker>
+        <marker id="open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <circle cx="4" cy="4" r="2" class="bg_filled"></circle>
+        </marker>
+        <marker id="big_open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <circle cx="4" cy="4" r="3" class="bg_filled"></circle>
+        </marker>
+    </defs>
+    <rect class="backdrop" x="0" y="0" width="504" height="160"></rect>
+    <rect x="324" y="40" width="168" height="96" class="solid nofill y" rx="4"></rect>
+    <text x="338" y="92" >Operating system</text>
+    <rect x="124" y="56" width="136" height="64" class="solid nofill p" rx="4"></rect>
+    <text x="138" y="92" >System shell</text>
+    <line x1="32" y1="72" x2="56" y2="72" class="solid"></line>
+    <g>
+        <path d="M 40,40 A 4,4 0,0,0 36,44" class="nofill"></path>
+        <line x1="36" y1="44" x2="36" y2="52" class="solid"></line>
+        <line x1="40" y1="40" x2="48" y2="40" class="solid"></line>
+        <path d="M 48,40 A 4,4 0,0,1 52,44" class="nofill"></path>
+        <line x1="52" y1="44" x2="52" y2="52" class="solid"></line>
+        <path d="M 36,52 A 4,4 0,0,0 40,56" class="nofill"></path>
+        <line x1="40" y1="56" x2="48" y2="56" class="solid"></line>
+        <line x1="44" y1="56" x2="44" y2="104" class="solid"></line>
+        <path d="M 52,52 A 4,4 0,0,1 48,56" class="nofill"></path>
+        <line x1="44" y1="104" x2="32" y2="128" class="solid"></line>
+        <line x1="44" y1="104" x2="56" y2="128" class="solid"></line>
+    </g>
+    <g>
+        <polygon points="72,84 64,88 72,92" class="filled"></polygon>
+        <line x1="72" y1="88" x2="96" y2="88" class="solid"></line>
+        <polygon points="96,84 104,88 96,92" class="filled"></polygon>
+    </g>
+    <g>
+        <polygon points="280,84 272,88 280,92" class="filled"></polygon>
+        <line x1="280" y1="88" x2="304" y2="88" class="solid"></line>
+        <polygon points="304,84 312,88 304,92" class="filled"></polygon>
+    </g>
+</svg>
