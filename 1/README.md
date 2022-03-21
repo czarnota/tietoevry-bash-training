@@ -1201,7 +1201,454 @@ The actual order is always left to right:
 $ ( ( echo 1 ||  echo 2 ) && echo 3 )
 ```
 
-## Writing scripts in Bash programming language
+# Writing scripts in Bash programming language
+
+## Creating and executing scripts
+
+A simple hello world script in Bash looks like this:
+```bash
+#!/usr/bin/env bash
+
+echo Hello World
+```
+
+To execute it you need to set executable permissions
+```bash
+$ chmod u+x script.sh
+```
+
+You can execute it by specifying path to it:
+
+```bash
+$ ./script.sh
+Hello World
+```
+
+## Sourcing scripts
+
+You can make Bash execute the commands in a script file, without
+spawning a child process using `source` command or `.` command.
+
+```bash
+$ source s
+$ . s
+```
+
+Executing script normally cause a child process to be created:
+```bash
+$ ./x
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f7dd70a4890) = 29863
+strace: Process 29863 attached
+[pid 29863] execve("./x", ["./x"], 0x55c9d60a31a8 /* 50 vars */) = -1 EACCES (Permission denied)
+sh: 13: ./x: Permission denied
+[pid 29863] +++ exited with 126 +++
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=29863, si_uid=11672137, si_status=126, si_utime=0, si_stime=0} ---
+$ --- SIGWINCH {si_signo=SIGWINCH, si_code=SI_KERNEL} ---
+```
+
+## Shebang
+
+The name of the script is passed as a first argument to the program indicated
+by shebang.
+```
+#!/bin/bash
+```
+
+For example, below is a script, which will remove itself upon execution.
+```
+#!/bin/rm
+```
+
+## Variables
+
+Bash scripting language supports variables. You can set a variable
+by assigning a value to it.
+```bash
+variable0=value
+variable0="value"
+```
+
+To access a variable you can use the `$` sign.
+```bash
+echo $variable0
+echo ${variable}
+echo "$variable"
+```
+
+When accessing variables `""` make a difference.
+```bash
+file="-fr /"
+rm $file        # rm "-fr" "/"
+rm "$file"      # rm "-fr /"
+```
+
+## Variable scope
+
+By default all variables are accessible only to a process in which they were
+set. To make them available to child processes you must use `export` command:
+```bash
+var=x
+export var
+./prog      # prog will see the var
+```
+
+You can export and set variable in one line:
+```bash
+export var=x
+./prog
+```
+
+You can create a variable only for the child process:
+```bash
+var=x ./prog
+```
+
+## Variable scope - examples
+
+The `visudo` program used the text editor specified in `EDITOR` environment
+variable
+```bash
+EDITOR=nano visudo
+```
+
+The `make` program passes environment variables to Makefiles. For example
+you can set a compiler using `CC` variable or compiler flags using `CFLAGS`
+variable (if Makefile uses them)
+```bash
+CC=clang CFLAGS=-g make
+```
+
+## Examples of variables likely available in your environment
+
+Below are examples of variables, which are likely available in your environment
+
+```bash
+$ echo $USER    # current username
+$ echo $PWD     # current working directory
+$ echo $RANDOM  # random number
+$ echo $PATH    # current program search path
+$ echo $SHELL   # path to shell program
+$ echo $OLDPWD  # previous directory
+$ echo $EDITOR  # preferred editor
+$ echo $HOME    # home directory
+```
+
+## Question: What is going to happen?
+
+What is about to happen in the below scenarios?
+
+```bash
+A=B
+
+A = B
+
+A= B
+
+A=Mary Had a Little Lamb
+
+A="Mary Had a Little Lamb"
+
+B="$A" A="$B"
+
+B="A" A="$B"
+
+A=B=C
+
+A=B B=C
+```
+
+## Answer: What is going to happen?
+
+Below is the explanation
+
+```bash
+A=B                        # Variable 'A' will have a value of 'B'
+
+A = B                      # Run 'A' program with '=' and 'B' as arguments
+
+A= B                       # Run 'B' program with 'A' set to ''
+
+A=Mary Had a Little Lamb   # Run 'Had' program with A='Mary'
+
+A="Mary Had a Little Lamb" # Setting 'A' to 'Mery had a Little Lamb'
+
+B="$A" A="$B"              # Setting 'B' to '' and 'A' to ''
+
+B="A" A="$B"               # Setting 'B' to 'B' and 'A' to 'A'
+
+A=B=C                      # Setting 'A' to 'B=C'
+
+A=B B=C                    # Setting 'A' to 'B' and 'B' to 'C'
+```
+
+## Data types - strings
+
+Every variable is a string by default.
+```bash
+hello=world
+```
+
+Numbers are also considered a string. The below statements are identical:
+```bash
+x=1
+x="1"
+```
+
+You can quote contents with `""` and `''` to allow for whitespace
+
+```bash
+hello="world world"
+hello='world world'
+```
+
+## Data types - integers
+
+You can declare variable as integer using `declare -i`
+This changes the behavior of `+` operator. Compare the
+below example:
+```bash
+$ declare -i x=1
+$ x=1+1
+$ echo $x
+2
+$ x+=1
+3
+```
+```bash
+$ declare x=1
+$ x=1+1
+$ echo $x
+1+1
+$ x+=1
+1+11
+```
+
+## Data types - arrays
+
+Bash supports array. You can declare them in the following way:
+```bash
+x=(foo bar baz)
+```
+Set and get an array element
+```bash
+x[1]=bar
+echo "${x[1]}"
+```
+Append elements
+```bash
+x+=(a b c d)
+```
+
+You can also declare an array of integers using `declare -ai x=(1 2 3)`.
+
+
+## Data types - array - `@` vs `*`
+
+```bash
+x=("john smith" "mark thomson" "daniel neville")
+```
+You can use `@` and `*` operators to get all elements. Below is
+the difference between them:
+```bash
+${x[@]}   # expands to: john smith mark thomson daniel neville
+${x[*]}   # expands to: john smith mask thomson daniel neville
+"${x[@]}" # expands to: "john smith" "mark thomson" "daniel neville"
+"${x[*]}" # expands to: "john smith mark thomson daniel neville"
+```
+Most of the time you probably need `"${x[@]}"`, because it expands into
+same number of tokens as there are elements.
+
+You can also count number of array items using `#`:
+```bash
+${#x[@]}
+```
+
+## Data types - associative arrays
+
+Declaring an associative array
+```bash
+declare -A x=(
+    [foo]=bar
+    [bar]=baz
+)
+```
+Assigning an element to an associative array
+```bash
+x[foobar]=1
+```
+Accessing all elements and all keys
+```bash
+$ echo "${x[@]}"
+bar baz 1
+$ echo "${!x[@]}"
+foo bar foobar
+```
+
+## Conditional staments
+
+Bash supports `if` conditional statement.
+```bash
+if COMMAND; then
+    COMMANDS
+elif COMMAND; then
+    COMMANDS
+else
+    COMMANDS
+fi
+```
+
+If a `COMMAND` is successful then it will execute an `if` branch, otherwise
+it will fallback to `else` branch.
+The below example code checks if `john` is present in `/etc/passwd` file.
+
+```bash
+if grep -q john /etc/passwd; then
+    echo User exists
+else
+    echo User does not exist
+fi
+```
+
+## The `true` and `false` programs
+
+The `true` is not a built-in value, instead it is implemented as program.
+```bash
+if true; then
+	echo always visible
+fi
+```
+Same goes for `false`:
+```bash
+if false; then
+	echo never visible
+fi
+```
+
+You can negate a condition using `!`
+```bash
+if ! false; then echo always visible; fi
+```
+
+## Testing conditions
+
+The `/usr/bin/test` program allows can check conditions. For example to
+check if `x` variable equals `1`:
+```bash
+if test "$x" -eq 1; then
+    echo x is 1
+fi
+```
+
+Checking if `x` is less than one
+
+```bash
+if test "$x" -lt 1; then echo x is less than 1; fi
+```
+
+Checking if `x` is not empty and equals `"foo"`
+
+```bash
+if test -n "$x" -a "$x" == foo; then echo pass; fi
+```
+
+More information is provided in `man test`.
+
+## The `/usr/bin/[`
+
+The `test` is aliased as `/usr/bin/[`. Invoking it in such way requires to pass
+`]` as the last argument. The whole construct resembles an `if` statement from
+other programming languages:
+```bash
+if [ "$x" -eq 1 ]; then
+    echo x is 1
+fi
+```
+
+Checking if `x` is less than one
+
+```bash
+if [ "$x" -lt 1 ]; then echo x is less than 1; fi
+```
+
+Checking if `x` is not empty and equals `"foo"`
+
+```bash
+if [ -n "$x" -a "$x" == "foo" ]; then echo pass; fi
+```
+
+## The built-in operator `[[`
+
+Bash provides built-in operator `[[`, which i. a. introduces some syntactic sugar
+(`"&&"`) and allows you to safely omit quoting of the variables:
+```bash
+if [[ $x -eq 1 ]]; then    # [ $x -eq 1 ] would not work without quotes is $x was empty
+    echo x is 1
+fi
+```
+
+Checking if `x` is less than one
+
+```bash
+if [[ $x -lt 1 ]]; then echo x is less than 1; fi
+```
+
+Checking if `x` is not empty and equals `"foo"`
+
+```bash
+if [[ -n "$x" && "$x" == "foo" ]]; then echo pass; fi
+```
+
+## Question: What is going on here?
+
+Why this prints `true`?
+```bash
+$ [[ 1 < 11 ]] && echo true || echo false
+true
+```
+
+And this prints `false`?
+```bash
+$ [[ 2 < 11 ]] && echo true || echo false
+false
+```
+
+## Question: What is going on here?
+
+The below check lexicographical order.
+```bash
+$ [[ 1 < 11 ]] && echo true || echo false
+true
+$ [[ 2 < 11 ]] && echo true || echo false
+false
+```
+
+To check numeric order we still need to use
+```bash
+$ [[ 1 -lt 11 ]] && echo true || echo false
+true
+$ [[ 2 -lt 11 ]] && echo true || echo false
+true
+```
+
+## Pattern matching
+
+To check if variable value starts with `foo`, you can:
+```bash
+[[ $x = foo* ]]
+```
+
+Checking if variable value ends with an even number:
+```bash
+[[ $x = *[02468] ]]
+```
+
+Checking if variable value consists of 5 characters:
+```bash
+[[ $x = ????? ]]
+```
+
+More information in Bash man page `man bash | grep -E "Pattern Matching$" -A 45`
+
 
 ## Wielozadaniowość na wielu procesorach/rdzeniach
 
