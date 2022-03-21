@@ -43,7 +43,7 @@ programmers still work using the "ancient" command line interface?
 
 - Do they want to show off?
 - Are they nerds?
-- Are they insance people?
+- Are they insane people?
 
 ## Answer: Why do we still use a command-line interface?
 
@@ -557,6 +557,355 @@ $ watch -n0 df
 You can get the `PID` of the process using `ps` program or `pidof`.
 
 # Input and output
+
+## Standard input, output and error
+
+Bash is started with 3 file descriptors open pointing to the terminal, numbered `0`, `1` and `2`.
+They are called standard input, standard output and standard error stream.
+
+The `cat` program will block, waiting for input from `0`.
+```bash
+$ cat
+
+```
+The `echo` program will write to `1`.
+```bash
+$ echo hello
+```
+The `ls` program will write errors to `2`
+```bash
+$ ls --cookies
+ls: unrecognized option '--cookies'
+```
+
+## Redirecting input
+
+You can start process with a file descriptor pointing to a file instead of
+a terminal
+
+Start `cat` with `foo` file as standard input
+```bash
+$ cat < foo
+bar
+```
+Start `echo` with `foo` file as standard output
+```bash
+$ echo bar > foo    # will create ovewrite the 'foo' file
+$ echo bar >> foo   # will append to the `foo` file
+```
+
+Start `ls` with `foo` file as standard error stream.
+```bash
+$ ls --cookies 2> foo
+```
+
+## Opening other file descriptos
+
+The `0`, `1` and `2` are just arbitrary numbers. You can open
+other file descriptors if you want.
+
+Run `echo` process with file descriptor `5` pointing to `foo` file.
+```bash
+$ echo bar 5>foo
+```
+Run `read` command with file descriptor `13` pointing to `foo` file
+and read a line from descriptor `13` into variable `bar`
+```bash
+$ read -u 13 bar 13< foo
+```
+
+## HEREDOC
+
+You can run a child process with the standard input pointing to temporary
+file created by `bash` with desired contents:
+
+```bash
+$ cat <<EOF
+abcdef
+abcdef
+EOF
+abcdef
+abcdef
+```
+
+```bash
+$ ls -l /proc/self/fd <<< "foo"
+lr-x------ 64 jane 21 mar  0:18 0 -> /tmp/sh-thd.PCaGIA (deleted)
+lrwx------ 64 jane 21 mar  0:18 1 -> /dev/pts/9
+lrwx------ 64 jane 21 mar  0:18 2 -> /dev/pts/9
+```
+
+## What stdin, stdout and stderr really are?
+
+You can check the opened file descriptors of a `bash` process in the
+following way:
+```
+$ ls -l /proc/$(pidof -s bash)/fd
+lrwx------ 64 john 20 mar 22:13 0 -> /dev/pts/9
+lrwx------ 64 john 20 mar 22:13 1 -> /dev/pts/9
+lrwx------ 64 john 20 mar 22:13 2 -> /dev/pts/9
+lrwx------ 64 john 20 mar 23:20 255 -> /dev/pts/9
+```
+
+As you can see three open file descriptors,
+stdin (`0`), stdout (`1`) and stderr (`2`), point to `/dev/pts/9`, which is
+a **pseudoterminal slave**.
+
+These are examples of an character device. A character device acts like a
+regular file, but instead of accessing the hard drive, a different specific
+functionality will be invoked in the kernel, when you write and read from it.
+
+## The pseudoterminal master and slave
+
+The terminal emulator opens the `/dev/ptmx`, creates a pseudoterminal
+slave `/dev/pts/X`, forks a child bash process with `0`, `1` and `2` file
+descriptors set to `/dev/pts/X`.
+
+![](assets/pseudoterminal.svg)
+
+## Question: Can you open a file in a `bash` process?
+
+In other words how can we open a file directly in `bash` process?
+
+Is there an equivalent of:
+```c
+int fd = open("foo.txt", O_RDONLY, 0);
+```
+?
+
+## Answer: Can you open a file in a `bash` process?
+
+You can use `exec` command.
+```bash
+$ exec 44< foo      # calls open("foo", O_RDONLY, 0)
+$ read line <&44    # calls read(44, ...)
+$ read line <&44    # calls read(44, ...)
+$ exec 44<& -       # calls close(44)
+```
+Writing is also possible:
+```bash
+$ exec 44> foo      # calls open("foo", O_WRONLY, 0)
+$ echo line >&44    # calls write(44, ...)
+$ echo line >&44    # calls write(44, ...)
+$ exec 44>& -       # calls close(44)
+```
+
+## Question: What happens if you close file descriptor 2 for bash process
+
+Try this command:
+
+```bash
+$ exec 2>&-
+```
+
+Then type:
+```
+ls<enter>
+```
+
+## Answer: What happens if you close file descriptor 2 for bash process
+
+Bash prints its prompt to descriptor `2` (standard error stream).
+So if we close it, we will see no prompt. But we standard input is
+still open, and also standard output, so typing `ls<enter>` is returns
+the directory listing.
+
+# Pipes
+
+## The Unix philosophy
+
+1. Write programs that **do one thing and do it well**
+2. Write **programs** to **work together**
+3. Write programs to handle **text** streams, because that **is an
+   universal interface**
+
+To realize this philosophy we need pipes.
+
+## The concept of pipe
+
+The `|` operator creates a `pipe` between 2 processes.
+
+```bash
+$ cat foo.txt | grep bar
+```
+
+The `pipe` endpoints are connected to descriptor `1` of the first process and 
+`0` of the second process.
+
+![](assets/pipe.svg)
+
+## Examples
+
+Count lines in a file
+```
+$ cat file | wc -l
+```
+
+Replace 'small' with 'BIG'
+```bash
+$ echo small | sed "s/small/BIG"
+```
+
+Remove all `.txt` files in current working directory and child directories
+```bash
+$ find . -name "*.txt" | xargs -rm -f
+```
+
+## Example programs - often used in pipes
+
+Below are programs that are most useful with pipes:
+
+```bash
+$ wc -l             # count number of lines in standard input
+$ xargs -n1 CMD     # execute CMD for each token from standard input
+$ cat               # pass everything from standard input to standard output
+$ grep pattern      # print to standard output only lines that contain 'pattern'
+$ sed 's/a/B/'      # replace 'a' with 'B'
+$ head -n 20        # print first 20 lines
+$ tail              # print last 20 lines
+$ less              # view contents of standard input interactively
+$ more              # view contents of standard input interactively (you can't go back)
+$ most              # view contents of standard input interactively (you can go sideways)
+$ tr x              # replace 'x' with 'X'
+$ bc                # An arbitrary precision calculator
+$ yes               # Prints 'y' to standard output
+$ cut               # remove section from each line of files
+$ tee               # read from standard input and write to standard output and files
+$ xclip             # copy standard input to clipboard
+```
+
+## Task: Covid prompt
+
+Modify your `~/.bashrc` so that you can see a live counter of total COVID
+cases world wide in your prompt.
+Create a tiny script that will run `curl` (in background), which will save
+current cases from the API in the `~/.cases` file. Then use `cat` to display
+it in the prompt.
+
+```
+curl --location -s --request GET 'https://api.covid19api.com/summary'
+```
+
+You can modify your prompt in `.bashrc`
+
+```bash
+foo () {
+    PS1="$(cat ~/.cases) \$"
+}
+PROMPT_COMMAND=foo
+```
+
+You will most likely need `jq` to parse `.json` or maybe `grep`.
+
+# Subshells
+
+## What is a subshell?
+
+A subshell is a child Bash process, which is spawned to execute a given command.
+Below you can see example operators that will cause Bash to create a subshell
+
+```
+(  )
+```
+```
+<(  )
+```
+```
+$(  )
+```
+```
+>(  )
+```
+```
+|
+```
+
+## Question: What is the difference when we run `ls` in a subshell
+
+We can check the difference between these 2 commands
+```bash
+$ ls
+```
+```bash
+$ (ls)
+```
+By running `strace`
+
+```bash
+$ strace -fe execve,clone bash
+$ ls
+$ (ls)
+```
+
+## Answer: What is the difference when we run `ls` in a subshell
+
+There is no difference:
+```
+$ ls
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 865843
+[pid 865843] execve("/usr/bin/ls", ["ls"], 0x558097fc94b8 /* 76 vars */) = 0
+...
+$ (ls)
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 865860
+[pid 865860] execve("/usr/bin/ls", ["ls"], 0x558097fc94d8 /* 76 vars */) = 0
+...
+```
+![](assets/facepalm.jpg)
+
+## Answer: What is the difference when we run `ls` in a subshell
+
+But actually, there is (complex commands):
+```
+$ ls; ls
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 867887
+[pid 867887] execve("/usr/bin/ls", ["ls"], 0x558097fc9528 /* 76 vars */) = 0
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 867888
+[pid 867888] execve("/usr/bin/ls", ["ls"], 0x558097fc9528 /* 76 vars */) = 0
+...
+(ls; ls)
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHL , child_tidptr=0x7f5eea1e1850) = 867945
+[pid 867945] clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 867946
+[pid 867946] execve("/usr/bin/ls", ["ls"], 0x558097fc9528 /* 76 vars */) = 0
+[pid 867945] execve("/usr/bin/ls", ["ls"], 0x558097fc9528 /* 76 vars */) = 0
+...
+```
+
+## Subshells and `cd`
+
+The `cd` is not executed normally as a separate process, but with a subshell
+it is.
+
+```
+$ cd
+$ (cd)
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f5eea1e1850) = 871287
+strace: Process 871287 attached
+[pid 871287] +++ exited with 0 +++
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=871287, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+--- SIGWINCH {si_signo=SIGWINCH, si_code=SI_KERNEL} ---
+```
+
+## Subshells - explanation
+
+When we call the following command
+
+```bash
+$ (ls; ls)
+```
+
+The following happens:
+
+![](assets/subshell.svg)
+
+## Subshells - optimization
+
+Bash will omit the second `fork()` is it is not neccessary.
+
+```
+$ (ls)
+```
+
+![](assets/subshellsimple.svg)
 
 ## Wielozadaniowość na wielu procesorach/rdzeniach
 

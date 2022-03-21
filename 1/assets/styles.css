@@ -107,6 +107,8 @@ body { font-family: "TietoevrySans1-Light", sans-serif; }
 #processes h1::before { background-image: url("bg1.jpg"); background-position: left -4em bottom 50%; background-size: cover; }
 #options-and-arguments h1::before { background-image: url("bg2.jpg"); background-position: left -4em bottom 50%; background-size: cover; }
 #input-and-output h1::before { background-image: url("bg3.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#pipes h1::before { background-image: url("pipes.jpg"); background-position: left -0% bottom 50%; background-size: cover; }
+#subshells h1::before { background-image: url("subshells.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
 #wielozadaniowość h1::before { background-size: cover; background-image: url("bg1.jpg"); }
 #procesy h1::before { background-image: url("bg2.jpg"); background-size: cover; }
 #tworzenie-procesów h1::before { background-image: url("bg3.jpg"); background-size: cover; }
