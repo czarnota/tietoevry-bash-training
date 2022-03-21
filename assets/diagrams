@@ -1,0 +1,170 @@
+read -rd '' COLORDEFS <<EOF
+# Legend:
+o = { fill: #FF9800; }
+c = { fill: #00BCD4; }
+m = { fill: #9C27B0; }
+b = { fill: #280071; }
+r = { fill: #F9423A; }
+v = { fill: #B1B5CE; }
+p = { fill: #EACBBB; }
+db = { fill: #071D49; }
+bn =  { fill: #633231; }
+dw =  { fill: #53565A; }
+ddw =  { fill: #6E6259; }
+g =  { fill: #26D07C; }
+y =  { fill: #E9EC6B; }
+k =  { fill: #000000; }
+w =  { fill: #FFFFFF; }
+EOF
+
+diagram 0.svg <<EOF 
+
+
+    .-.                                 .--------------------.
+    '+'        .----------------.       |                    |
+    -+-        | {p}            |       |                    |
+     |  <--->  | "System shell" | <---> | "Operating system" |
+     +         |                |       |                    |
+    / \        '----------------'       |              {y}   |
+                                        '--------------------'
+
+
+
+
+
+
+
+
+$COLORDEFS
+EOF
+
+diagram 1.svg <<EOF
+
+                "Hard link"                               "Soft link"
+                                                     
+ "directory entry"  "directory entry"                 "directory entry"          
+   .-----------.     .-----------.                      .-----------.          
+   |   "foo"{v}|     |   "bar"{v}|<-----.               |   "baz"{y}|     
+   '-----------'     '-----------'      |               '-----------'     
+         |                 |            |                     |         
+         |                 |            |                     |         
+         v                 v            |                     v         
+  .--------------------------------.    |     .--------------------------------.
+  |                                |    |     |                                |
+  |             Inode              |    '----+|             Inode              |
+  |                            {r} |          |                            {r} |
+  '--------------------------------'          '--------------------------------'
+
+
+
+$COLORDEFS
+EOF
+
+diagram 12.svg <<EOF
+
+
+           .---------------------------------------.    .---------------------------------------.    .---------------------------------------.        
+           |                                       |    |                                       |    |                                       |      
+           | "struct task_struct {"                |    | "struct task_struct {"                |    | "struct task_struct {"                |      
+           |     "struct list_head {"              |    |     "struct list_head {"              |    |     "struct list_head {"              |      
+           |         "struct list_head *next;"-----|--->|         "struct list_head *next;"-----|--->|         "struct list_head *next;"-----|---> ...
+   ... <---|---------"struct list_head *prev;"     |<---|---------"struct list_head *prev;"     |<---|---------"struct list_head *prev;"     |      
+           |     "} tasks;"                        |    |     "} tasks;"                        |    |     "} tasks;"                        |      
+           |     "pid_t pid;"                      |    |     "pid_t pid;"                      |    |     "pid_t pid;"                      |      
+           |     "struct mm_struct *mm"            |    |     "struct mm_struct *mm"            |    |     "struct mm_struct *mm"            |      
+           |     "struct task_struct *real_parent;"|    |     "struct task_struct *real_parent;"|    |     "struct task_struct *real_parent;"|      
+           |     "struct task_struct *parent;"     |    |     "struct task_struct *parent;"     |    |     "struct task_struct *parent;"     |      
+           |     "struct list_head children;"      |    |     "struct list_head children;"      |    |     "struct list_head children;"      |      
+           |     "struct sigpending pending;"      |    |     "struct sigpending pending;"      |    |     "struct sigpending pending;"      |      
+           |     "struct files_struct *files;"     |    |     "struct files_struct *files;"     |    |     "struct files_struct *files;"     |      
+           |     "void *stack"                     |    |     "void *stack"                     |    |     "void *stack"                     |      
+           |     "..."                             |    |     "..."                             |    |     "..."                             |      
+           | "};"                                  |    | "};"                                  |    | "};"                                  |      
+           |                                       |    |                                       |    |                                       |      
+           '---------------------------------------'    '---------------------------------------'    '---------------------------------------'      
+$COLORDEFS
+EOF
+
+diagram pseudoterminal.svg <<EOF
+                                                        .-------------------.                
+                                                        | "/bin/ls"  "0,1,2"|--.
+  .---------------------------.                         '-----+-------------'  |
+  |                           |   "child of"                  | "child of"     | 
+  |    "terminal emulator"    |<-------.                      v                |
+  | "e.g. xterm or alacritty" |        |        .-------------+-------------.  |
+  |                           |        |        |                           |  |
+  '-------------+-------------'        '--------|        "/bin/bash"        |  |
+                |                               |           "0,1,2"         |  |
+                |                               '-------------+-------------'  |
+                |                                             |                |
+                |                                             |                |
+   .------------+------------.                   .------------+------------.   |
+   | "pseudoterminal master" |                   | "pseudoterminal master" |---'
+   |      "/dev/ptmx"        |                   |       "/dev/pts9"       |
+   '------------+------------'                   '------------+------------'
+                |                                             |
+                |              userspace                      |
+ - - - - - - - -|- - - - - - - - - - - - - - - - - - - - - - -+- - - - - - - - -
+                |             kernelspace                     |
+                |                                             |
+    .-----------+---------------------------------------------+-----.
+    |                                                               |
+    |                                                               |
+    |                          "PTMX driver"                        |
+    |                      "/drivers/tty/pty.c"                     |
+    |                                                               |
+    |                                                               |
+    '---------------------------------------------------------------'
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+EOF
+
+diagram pipe.svg <<EOF
+
+                             .------------------.
+                             |                  |
+                             |       Bash       |
+           .-----------------| "int pipefd[2];" |------------------.
+           |                 | "pipe(pipefd);"  |                  |
+           |                 |                  |                  |
+           |                 '------------------'                  |
+           |                                                       |
+           |                                                       |
+ .---------+---------.                                   .---------+---------.
+ |                   |    .-----------------------.      |                   |
+ |  "cat foo.txt"  1 |--->| pipefd[1]   pipefd[0] |----->| 0  "grep bar"   1 |--> "terminal".
+ |                   |    '-----------------------'      |                   |
+ '-------------------'                                   '-------------------'
+
+
+EOF
+
+diagram subshell.svg <<EOF
+
+    .------.
+    | Bash |
+    '---+--'
+        | 
+        |         .------.
+"fork()"'---------| Bash | "Additional bash is forked, which is executing commands"    .
+                  '---+--'
+                      |      .------.
+ "fork() and execve()"+------|  ls  |
+                      |      '------'
+                      |
+                      |      .------.
+                      '------|  ls  |
+                             '------'
+EOF
+
+diagram subshellsimple.svg <<EOF
+
+    .------.
+    | Bash |
+    '---+--'
+        | 
+        |         .------.
+"fork()"'---------|  ls  | "For simple commands the second fork() is omitted"    .
+"execve()"        '---+--'
+EOF

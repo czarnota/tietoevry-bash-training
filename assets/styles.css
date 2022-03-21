@@ -1,0 +1,117 @@
+@font-face {
+    font-family: "TietoevrySans1-Bold";
+    src: url("fonts/TietoevrySans1-Bold.woff2") format("woff2"),
+         url("fonts/TietoevrySans1-Bold.woff") format("woff"),
+         url("fonts/TietoevrySans1-Bold.ttf") format("truetype");
+}
+@font-face {
+    font-family: "TietoevrySans1-Light";
+    src: url("fonts/TietoevrySans1-Light.woff2") format("woff2"),
+         url("fonts/TietoevrySans1-Light.woff") format("woff"),
+         url("fonts/TietoevrySans1-Light.ttf") format("truetype");
+}
+@font-face {
+    font-family: "TietoevrySans1-Medium";
+    src: url("fonts/TietoevrySans1-Medium.woff2") format("woff2"),
+         url("fonts/TietoevrySans1-Medium.woff") format("woff"),
+         url("fonts/TietoevrySans1-Medium.ttf") format("truetype");
+}
+@font-face {
+    font-family: "TietoevrySans1-Regular";
+    src: url("fonts/TietoevrySans1-Regular.woff2") format("woff2"),
+         url("fonts/TietoevrySans1-Regular.woff") format("woff"),
+         url("fonts/TietoevrySans1-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "TietoevrySans1-Thin";
+    src: url("fonts/TietoevrySans1-Thin.woff2") format("woff2"),
+         url("fonts/TietoevrySans1-Thin.woff") format("woff"),
+         url("fonts/TietoevrySans1-Thin.ttf") format("truetype");
+}
+
+body { font-family: "TietoevrySans1-Light", sans-serif; }
+
+.level1 h1 {
+    background: #280072;
+    padding-right: 40.0%;
+    color: #fff;
+    position: relative;
+    font-weight: bold;
+}
+.level1 h1::before {
+    background: #111;
+    background-size: cover;
+    content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 60.0%;
+    position: absolute;
+}
+.level1 h1::after {
+    background: url(Picture1.svg), url(tewhite.svg);
+    content: "";
+    width: 62.5%;
+    height: 100%;
+    left: 0;
+    padding: 0.75em;
+    box-sizing: border-box;
+    position: absolute;
+    background-repeat: no-repeat, no-repeat;
+    background-position: right -7% top 0%, left 0% bottom -10%; 
+    background-origin: content-box;
+    background-size: 35% 35%, 25% 25%;
+}
+
+.level2 {
+    position: relative;
+}
+
+.level2 > * {
+    z-index: 5;
+}
+
+.level2::before {
+    position: absolute;
+    background: url(Picture2.svg);
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: right 0% bottom 0%;
+    background-origin: content-box;
+    box-sizing: border-box;
+    background-size: 15% auto;
+    padding: 1.25em;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: "";
+}
+
+.level2::after {
+    content: "Public";
+    background: url(tegray.svg);
+    background-repeat: no-repeat;
+    background-position: left 0% bottom 0%;
+    padding-left: 10em;
+    width: 10%;
+    font-size: 0.4em;
+    color: #aaa;
+    margin-bottom: 2em;
+    background-size: 30% 100%;
+    bottom: 0;
+    position: absolute;
+}
+
+#bash-training h1::before { background: url(bg0.jpg); background-size: cover; }
+#processes h1::before { background-image: url("bg1.jpg"); background-position: left -4em bottom 50%; background-size: cover; }
+#options-and-arguments h1::before { background-image: url("bg2.jpg"); background-position: left -4em bottom 50%; background-size: cover; }
+#input-and-output h1::before { background-image: url("bg3.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#pipes h1::before { background-image: url("pipes.jpg"); background-position: left -0% bottom 50%; background-size: cover; }
+#subshells h1::before { background-image: url("subshells.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#glob-patterns h1::before { background-image: url("glob-patterns.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#error-codes h1::before { background-image: url("errorcodes.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#writing-scripts-in-bash-programming-language h1::before { background-image: url("scripts.jpg"); background-position: left -5em bottom 50%; background-size: cover; }
+#argument-handling h1::before { background-image: url("argument-handling.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#functions h1::before { background-image: url("functions.jpg"); background-position: left -7.5em bottom 50%; background-size: cover; }
+#thank-you h1::before { background-image: url("thank-you.jpg"); background-position: left -12.5em bottom 50%; background-size: cover; }
