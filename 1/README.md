@@ -1887,755 +1887,403 @@ cat /etc/hosts | while read ip hostname; do
 done
 ```
 
-## Wielozadaniowość na wielu procesorach/rdzeniach
+## Task: Create new files from directories
 
-W przypadku wielu procesorów, system operacyjny może uruchamiać procesy
-rzeczywiście równolegle
+Create a script called `new`, which will create files from templates located
+in `~/.new` directory.
 
-![](assets/7.svg)
+You can find templates at
+[https://github.com/leachim6/hello-world](https://github.com/leachim6/hello-world)
 
-## Wielozadaniowość na wielu procesorach/rdzeniach
+When user executes `new` it should list available "templates", which are stored in
+`~/.new` directory and ask the user which "template" to use for a new file.
 
-W praktyce procesy mogą być uruchamiane na różnych rdzeniach procesora.
+Example usage:
+```c
+$ ./new
+1) main.cpp
+2) main.c
+3) main.py
+choose: 2
+$ ls
+main.c
+```
+You can display a simple menu using `echo` and a loop or you optionally you can use `fzf`
+program.
 
-![](assets/9.svg)
+## Task: QR code from clipboard
 
-## Afiniczność procesora
+Create an interactive program which continuously reads system clipboard and
+generates the QR code based on its contents.
 
-W Linuksie możemy określić na których procesorach będzie wykonywany proces
+You may need use the following features and programs:
+
+- `while` - main program loop
+- `sleep` - to pause execution for a moment
+- `qrencode -t UTF8` - to generate QR code
+- `xclip` - to access the clipboard
+- `clear` - to clear the screen
+
+# Argument handling
+
+## Accessing arguments
+
+You can access arguments passed to a script using `${N}` variable, where
+`N` is N-th argument passed to a script. For example the `./script`:
+```
+$ ./script a b c
+```
+Will receive the following arguments:
+```bash
+#!/usr/bin/env bash
+
+echo $0 # ./script
+echo $1 # a
+echo $2 # b
+echo $3 # c
+echo "$*" # "a b c"
+echo "$@" # "a" "b" "c"
+echo "$#" # 3
+```
+
+To access 10-th argument you need to use `${10}`.
+
+## The `getopts` built-in
+
+The `getopts` build-in allows you to support POSIX short options, like
+`-a` or `-b`. For example to support `./program -a -b -c -d arg -e a b c` we
+can use the following loop:
+```bash
+while getopts ":abcd:e" option; do
+    case "$option" in
+        a) opt_a=1 ;;
+        b) opt_b=1 ;;
+        c) opt_c=1 ;;
+        d) opt_d="$OPTARG" ;;
+        e) opt_e=1 ;;
+        :) echo "-$OPTARG requieres an argument" 1>&2 ;;
+        \?) echo "-$OPTARG doesn't exist" 1>&2 ;;
+        *) echo "unsuppoerted option $option" 1>&2 ;;
+    esac
+done
+shift $((OPTIND - 1))
+```
+
+After `getopts` is executed once, the next argument number that will be
+processed is stored in `$OPTIND`. This is why at the end of the above loop,
+we do `shift $((OPTIND - 1))` to remove the arguments that are already parsed.
+
+## Parsing long options
+
+Long options must be implemented manually. Below is an example
+for `./program --alfa --gamma ARG`. The example is not complete
+because it does not support `--gamma=ARG`.
 
 ```bash
-$ taskset -p 0x11 9726
+while true; do
+    arg="$1"
+    case "$arg" in
+        -a|--alfa)
+            shift || break;
+            opt_alfa=1 ;;
+        -g|--gamma)
+            shift || break;
+            opt_gamma="$1"
+            if ! shift; then
+                echo "$arg requires and argument" 1>&2; break
+            fi
+            ;;
+        -*) echo "unrecognized option: $arg" 1>&2; break ;;
+        *) break ;;
+    esac
+done
 ```
 
-Podobne ustawienie istnieje również w menedżerze zadań systemu Windows
+## Task: Installing ssh keys
 
-![](assets/affinity.png)
+Create script that is invoked as `./install-ssh-key HOST` and will copy
+your public key to `HOST` machine. If the public key does not exist it will
+run `ssh-keygen` and generate it.
 
-# Procesy
-
-## Procesy w systemie Linux
-
-Procesem nazywamy program, który się wykonuje.
-W skład procesu wchodzą:
-
-- **Stan procesora (rejestry).** Dla `x86_64` są to:
-    - `rbp` - wskaźnik początku stosu
-    - `rsp` - wskaźnik końca stosu (ang. Stack pointer)
-    - `rip` - wskaźnik aktualnej instrukcji (ang. Program counter)
-    - `rflags` - rejest flag procesora
-    - rejestry ogólnego przeznaczenia: `rax`, `rcx`, `rdx`, `rbx`, `rsi`, `rdi`, `r8`-`r15`
-- **Pamięć wirtualna** (Tabela stron) (wskazywana przez rejestr `CR3`)
-- **Deskryptory plików**, czyli (najważniejsze):
-    - pliki (otwarte za pomocą `open()`)
-    - gniazda sieciowe (otwarte za pomocą `socket()`, `accept()`)
-    - potoki (otwarte za pomocą `pipe()`)
-    - demultiplexery zdarzeń (otwarte za pomocą `epoll_create()`)
-- Inne struktury danych istotne dla jądra Linux
-
-## Podglądanie procesów w systemie
-
-W systemie Linux, uruchomione procesy możemy zobaczyć za pomocą
-programu `ps`
-
-```console
-$ ps
-  PID TTY           TIME CMD
-  896 ttys000    0:00.10 -bash
- 1073 ttys001    0:00.08 -bash
- 7601 ttys001    0:00.02 bash /Users/hehe/v/e @
- 7603 ttys001    1:40.37 nvim
- 1074 ttys002    0:00.15 -bash
-75444 ttys002    0:00.00 (sleep)
- 6110 ttys003    0:00.50 -bash
-75450 ttys003    0:00.00 bash /Users/hehe/v/y
- 7870 ttys004    0:00.09 -bash
-75448 ttys004    0:00.00 sleep 1
+```bash
+$ ./install-ssh-key login@10.0.0.1
+```
+After running the program it should be possible to login without password
+```bash
+$ ssh login@10.0.0.1
 ```
 
-Liczba `PID` to unikalny identyfikator procesu.
+Then extend the script to work for multiple machines
 
-## Podglądanie procesów w systemie - top
-
-Programy `top` oraz `htop` umożliwają podgląd procesów w czasie rzeczywistym
-
-```console
-$ top
-top - 22:20:33 up 56 min,  1 user,  load average: 0,33, 0,52, 0,56
-Zadania:razem: 328, działających:   2, śpiących: 326, zatrzymanych:   0, zombie:   0
-%CPU:  2,9 uż,  1,8 sy,  0,0 ni, 95,3 be,  0,0 io,  0,0 hi,  0,0 si,  0,0 sk
-MiB RAM :  15888,6 razem,   9129,5 wolne,   3037,6 użyte,   3721,6 buf/cache
-MiB Swap:   4880,0 razem,   4880,0 wolne,      0,0 użyte.  12497,1 dost. RAM
-
-    PID UŻYTK.    PR  NI    WIRT    REZ    WSP S  %CPU  %PAM     CZAS+ KOMENDA
-   1452 hehe       9 -11 2731536  20752  16068 S   8,0   0,1   0:55.86 pulseaudio
-   3269 hehe      20   0  522940  55472  40716 R   5,7   0,3   4:34.44 x-terminal-emul
-   9773 hehe      20   0  217860  52624  35892 S   4,6   0,3   1:22.04 MainThread
-   5321 hehe      20   0 4935640 751040 310720 S   3,4   4,6   4:44.81 firefox
-   8058 hehe      20   0  319064  50504  39920 S   2,3   0,3   0:54.45 RDD Process
-  34580 hehe      20   0   23400   4224   3288 R   2,3   0,0   0:00.05 top
-    287 root      20   0       0      0      0 I   1,1   0,0   0:02.22 kworker/4:1-events
-   1903 hehe      20   0 4463536 392068 118248 S   1,1   2,4   1:30.14 gnome-shell
-   1989 hehe      20   0  396140   8576   7056 S   1,1   0,1   0:20.24 ibus-daemon
-   2286 hehe      20   0 5165376 252416  77816 S   1,1   1,6   0:09.15 dropbox
-      1 root      20   0  170040  14056   8280 S   0,0   0,1   0:01.51 systemd
+```bash
+$ ./install-ssh-key login@10.0.0.1 login@10.0.0.2
 ```
 
-## Podglądanie procesów w systemie - pseudo system plików /proc
+## Task: Repeat
 
-```console
-$ ls /proc
-1   42   129  289  978   1259  1580  2103  8238   34694          kpageflags
-2   43   132  290  981   1285  1627  2104  8403   34695          loadavg
-3   44   133  291  986   1286  1630  2105  8648   35412          locks
-4   46   136  349  990   1301  1762  2106  8808   35848          mdstat
-6   47   138  350  994   1358  1780  2107  8827   35849          meminfo
-8   48   139  351  1009  1374  1850  2109  8968   35855          misc
-9   49   142  353  1011  1377  1870  2110  8970   acpi           modules
-10  50   150  437  1013  1378  1875  2118  9421   asound         mounts
-11  52   153  438  1015  1379  1881  2192  9773   bootconfig     mtrr
-12  53   154  491  1017  1380  1888  2194  10510  buddyinfo      net
-13  54   159  519  1019  1381  1903  2247  12703  bus            pagetypeinfo
-14  55   194  520  1021  1407  1989  2260  13057  cgroups        partitions
-15  56   219  522  1023  1411  1993  2286  13159  cmdline        pressure
-16  58   221  524  1025  1412  1994  2376  15059  consoles       schedstat
-17  59   242  526  1078  1414  1998  2391  19363  cpuinfo        scsi
-18  60   244  528  1079  1421  2004  2513  19374  crypto         self
-19  61   245  529  1116  1450  2008  2681  27384  devices        slabinfo
-20  62   247  620  1117  1452  2016  3269  27437  diskstats      softirqs
+Create a script named `repeat`, which will execute given command as
+many times as specified with `-n` parameter
+
+```bash
+$ ./repeat -n 3 echo foo bar baz
+foo bar baz
+foo bar baz
+foo bar baz
 ```
 
-## Drzewo procesów
+**Very important**: arguments must be correctly processed. This should
+create single file `"x y z"` 3 times:
 
-Drzewo procesów możemy ujrzeć za pomocą programu `pstree`
-
-```console
-$ pstree
-systemd─┬─ModemManager───2*[{ModemManager}]
-        ├─NetworkManager───2*[{NetworkManager}]
-        ├─fwupd───4*[{fwupd}]
-        ├─gdm3─┬─gdm-session-wor─┬─gdm-x-session─┬─Xorg───{Xorg}
-        │      │                 │               ├─gnome-session-b─┬─ssh-agent
-        │      │                 │               │                 └─2*[{gnome-session-b}]
-        │      │                 │               └─2*[{gdm-x-session}]
-        │      │                 └─2*[{gdm-session-wor}]
-        │      └─2*[{gdm3}]
-        ├─polkitd───2*[{polkitd}]
-        ├─systemd─┬─(sd-pam)
-        │         ├─tmux: server─┬─bash───bash───nvim─┬─2*[xclip]
-        │         │              │                    └─{nvim}
-        │         │              ├─bash───bash───sleep
-        │         │              ├─bash
-        │         │              └─bash─┬─bash
-        │         │                     └─pstree
-       ...       ...
+```bash
+$ ./repeat -t 3 touch "x y z"
+$ ls
+"x y z"
 ```
 
-# Tworzenie procesów
+## Task: Self extracting archive
 
-## Wywołanie systemowe - `fork()`
+Create a script called `tarpack`, which accepts a `.tar.gz` archive as a first argument and
+produces a script (name as a second argument), which will act as a "self-extracting"
+archive.
 
-Do tworzenia procesów, służy wywołanie systemowe `fork()`.
-Wywołanie `fork()` tworzy proces potomny, który jest "klonem"
-procesu rodzica.
-
-```c
-   int main(void)
-   {
-       printf("przed utworzeniem\n");
--->    int pid = fork();
-       ...
-   }
+We should be able turn an archive into a script, then
+remove the archive.
 ```
-Po wywołaniu `fork()`:
-```c
-   /* rodzic */                         /* dziecko */
-   int main(void)                       int main(void)
-   {                                    {
-       printf("przed utworzeniem\n");       printf("przed utworzeniem\n");
--->    int pid = fork();             -->    int pid = fork();
-       ...                                  ...
-   }                                    }
+$ ./tarpack archive.tar.gz foo.sh
+$ rm archive.tar.gz
+```
+And finally unpack the archive:
+```
+$ ./foo.sh
 ```
 
-## Wartość zwracana `fork()`
+You may need:
 
-Wywołanie `fork()` w procesie potomnym zwraca `0`, natomiast w procesie
-rodzica wartością zwróconą będzie PID procesu potomnego.
+- `base64`
 
-```c
-   /* rodzic */                         /* dziecko */
-    int main(void)                       int main(void)
-    {                                    {
-        printf("przed utworzeniem\n");       printf("przed utworzeniem\n")j
-        int pid = fork();                    int pid = fork();
-        if (pid == 0)                        if (pid == 0)
-            printf("child\n");        -->        printf("child\n");   
-        else                                 else
- -->        printf("parent\n");                  printf("parent\n");  
-        return 0;                            return 0;
-    }                                    }
+## Task: find and open
+
+Create a script that will look for files, which name contains the string
+passed as the first argument. The script will print a choice menu with
+matched files. After the user selects an option, the script will open the selected
+file in the editor specified by `$EDITOR` environment variable. If variable is
+not specified it should fall back to `vi`
+
+```bash
+$ EDITOR=name f foo
+1) foobar
+2) barfoo
+3) afoo
+choice: 2
 ```
 
-Na podstawie wartości zwracanej, możemy określić czy "znajdujemy" się
-w procesie potomnym czy w procesie rodzica.
+# Functions
 
-## Oczekiwanie na zakończenie procesu potomnego
+## Defining functions
 
-Do oczekiwania na zakończenie procesu potomnego służy, wywołanie
-systemowe `wait()`, które blokuje program do momentu zakończenia
-dowolnego procesu potomnego.
-
-```c
-   /* rodzic */                         /* dziecko */
-    int main(void)                       int main(void)
-    {                                    {
-        printf("przed utworzeniem\n");       printf("przed utworzeniem\n")j
-        int pid = fork();                    int pid = fork();
-        if (pid == 0) {                      if (pid == 0) {
-            printf("child\n");                   printf("child\n");   
-        } else {                             } else {
-            printf("parent\n");                  printf("parent\n");  
- -->        wait(NULL);                          wait(NULL);
-        }                                    }
-        return 0;                     -->    return 0;
-    }                                    }
+In Bash functions are declared by specifying their name followed by `()`
+```bash
+function_name () {
+    COMMANDS
+    return EXIT_CODE
+}
+```
+There is also an alternate syntax that is equivalent to the previous one.
+```bash
+function function_name {
+    COMMANDS
+    return EXIT_CODE
+}
+```
+You can call a function by specifying its name:
+```bash
+function_name
 ```
 
-## `wait()` obsługa błędów
+## Functions and subshells
 
-Wywołanie systemowe `wait()` zwraca `pid` zakończonego procesu.
-Jeżeli wartość jest ujemna to wystąpił błąd. Błąd uzyskać można
-odczytująć zmienną `errno`.
+By default a function is executed within the same bash process. We can
+however call a function in a subshell.
+```bash
+(function_name)
+```
+Alternatively we can define a function using `(  )` brackets instead of `{  }`.
+This way the function will always be called in a subshell.
+```bash
+function () (
+    COMMANDS
+    return EXIT_CODE
+)
+```
+```
+function_name
+```
 
-```c
-pid = wait(NULL);
-if (pid < 0) {
-    fprintf(stderr, "error: wait: %s\n", strerror(errno));
-    return -1;
+## Function arguments
+
+A function, just like a script can accept arguments. You can access them
+using same variables as in the case of script arguments.
+
+```bash
+#!/usr/bin/env bash
+
+foo () {
+    echo $1 $2 $3 # a b c
+    echo "$*" # "a b c"
+    echo "$@" # "a" "b" "c"
+    echo $# # 3
+    echo $0 # program_name (not function name)
 }
 ```
 
-## `wait()` odczytanie wartości zwracanej
+Calling function with arguments:
+```bash
+foo a b c
+```
 
-Można odczytać wartość jaką zwrócił proces potomny przekazując
-wskaźnik jako pierwszy argument wywołania `wait()`.
+## Local variables
 
-```c
-int status;
-pid = wait(&status);
-if (pid < 0) {
-    fprintf(stderr, "error: wait: %s\n", strerror(errno));
-    return -1;
+A local variable can be declared using `local`.
+```bash
+#!/bin/bash
+
+foo () {
+    local x
+    x=1
+    y=1
+    echo "$x"
 }
-if (WIFEXITED(status))
-    printf("dziecko zwróciło: %d\n", WEXITSTATUS(status));
+x=2
+y=2
+foo
+echo $x # prints 2
+echo $y # prints 1
 ```
 
+Instead of `local` you can also use `declare`. If `declare` is used in function
+scope then it creates local variable. To create global variable from the scope 
+of function you need to use `declare -g`. There is also `readonly`, but it behaves
+like `declare -gr` (variable will not be local).
 
-## Oczekiwanie na zakończenie kilku procesów potomnych
+## Question: what will be displayed?
 
-Wywołanie systemowe `wait()` czeka na pierwszy proces potomny,
-który ulegnie zakończeniu. Jeżeli utworzonych zostało więcej procesów
-potomnych, to należy ponowić oczekiwanie.
+```bash
+a () { echo "$var" }
+b () { local var="local value"; a; }
 
-```c
-while (true) {
-    int pid = wait(NULL);
-    if (pid < 0) {
-        /* Nie ma już dzieci */
-        if (errno == ECHILD)
-            break;
-        /* Wystąpił rzeczywisty błąd */
-        fprintf(stderr, "error: wait: %s\n", strerror(errno));
-        break;
-    }
+var="global value"
+a   # outputs ???
+b   # outputs ???
+```
+
+## Answer: what will be displayed?
+
+**Bash uses dynamic scoping**. **The value of var in child is not determined by where child is defined,
+but by where it is called.** If there is no local definition in the body of child,
+the next place the shell looks is in the body of the function from which child is called,
+and so forth. The local modifier creates a variable in a function that is local to that call,
+so it does not affect the value of the variable from any enclosing scopes.
+It is, though, visible to any enclosed scope ([https://stackoverflow.com/a/40659060](https://stackoverflow.com/a/40659060)).
+
+
+```bash
+a () { echo "$var" }
+b () { local var="local value"; a; }
+
+var="global value"
+a   # outputs "global valaue"
+b   # outputs "local value"
+```
+
+## Handling arguments in functions
+
+It is a good practive to assign arguments to variables, to document
+their meaning.
+
+```bash
+#!/usr/bin/env bash
+
+introduce () {
+    local name="$1";
+    local surname="$2"
+    local age="$3"
+
+    echo "$name $surname $age"
 }
+introduce Przemysław Czarnota 29
 ```
+Problems with this approach:
 
-## Wywołanie `waitpid()`
+- the body of the function will be executed regardless of whether the number of provided
+  arguments is correct;
+- adding a new argument in the middle requires to update all arguments that follow it;
+- reordering arguments requires updating the argument numbers, which is prone to errors.
 
-Wywołanie systemowe `waitpid()` pozwala zaczekać na konkretny process potomny
+## Better handling arguments in functions
 
-```c
-int status;
-waitpid(pid, &status, 0);
-if (WIFEXITED(status))
-    printf("dziecko zwróciło: %d\n", WEXITSTATUS(status));
-```
+To overcome the mentioned problems, we can improve the argument handling
+```bash
+#!/usr/bin/env bash
 
-Tak naprawde `wait()` działa tak samo jak:
+introduce () {
+    local name="$1"; shift || return
+    local surname="$1"; shift || return
+    local age="${1-not disclosed}"; shift || true # optional arguments
 
-```c
-int pid = waitpid(-1, &status, 0);
-```
-
-Więcej informacji
-```console
-$ man 2 wait
-```
-
-## Najistotniejsze efekty `fork()`
-
-Podczas **wywołania systemowego** `fork()`:
-
-- Używany jest ten dalej ten sam **kod programu**
-- Kopiowany jest **stan procesora** (w tym **wskaźnik aktualnej instrukcji**)
-- Dziedziczone są **deskryptory plików**:
-- Kopiowana są **strony pamięci**, ale dopiero po pierwszym zapisie (**Copy-on-write**)
-
-## Tworzenie procesu, który będzie wykonywał inny program
-
-Wywołanie `fork()` powoduje utworzenie nowego procesu, który jest niemalże
-dokładną kopią procesu potomnego. Żeby zmienić kod wykonywanego programu należy
-użyc funkcji z rodziny `exec()`
-```c
-int execl(const char *path,
-          const char *arg0, ..., /*, (char *)0, */);
-int execle(const char *path,
-           const char *arg0, ..., /* (char *)0 char *const envp[] */);
-int execlp(const char *file,
-           const char *arg0, ..., /*, (char *)0, */);
-int execv(const char *path, char *const argv[]);
-int execvp(const char *file, char *const argv[]);
-int execvP(const char *file, const char *search_path,
-          kchar *const argv[]);
-```
-
-Wywołanie systemowe `exec()` ładuje nowy program do aktualnego
-procesu (czyli podmienia sekcje .data, .bss, .text, stos i sterte, biblioteki współdzielone)
-
-## Przykład wykorzystania `exec()`
-
-Przykładowy program, który utworzy proces potomny i załaduje do niego
-program `ls`. Proces rodzica będzie czekał na zakończenie procesu potomnego.
-
-```c
-int main(int argc, char **argv)
-{
-    int ret;
-    ret = fork();
-    if (ret == 0) {
-        char *argv[] = { "ls", NULL };
-        ret = execvp("ls", argv);
-        if (ret) {
-            perror("execvp: ");
-            return 1;
-        }
-    }
-
-    wait(NULL);
-
-    return 0;
+    echo "$name $surname $age"
 }
+
+introduce Przemysław Czarnota 29
 ```
 
-## Procesy zombie
+- all required arguments must be provided to a function in order for the body
+  to execude;
+- adding a new argument in the middle does not require update of the following lines;
+- reordering arguments is done by just reordering lines.
 
-Jeżeli proces zakończył swoje wykonywanie, a rodzic nie wykonał `wait()`
-to będzie on nadal widoczny na liście procesów, do momentu wykonania `wait()`
-przez rodzica.
+## Handling standard input and standard output in functions
 
-Poniższy kod tworzy proces zombie, który będzie istniał około 30 sekund:
-```c
-#include <unistd.h>
+The functions receive standard input and print to standard output.
 
-int main(void)
-{
-    /* Klonujemy proces */
-    int pid = fork();
-    /* Jeżeli jesteśmy dzieckiem */
-    if (pid == 0)
-        return 0; /* Kończymy - proces jest zombie do wykonania wait() */
-    /* Jeżeli jesteśmy rodzicem to czekamy 30 sekund*/
-    sleep(30);
-    /* Odczytujemy kod wyjścia procesu i usuwamy go z listy procesów */
-    wait(NULL);
-    return 0;
+For example the `tr` command will receive the same standard input that was
+passed to the function and will print to the same standard output that
+was set for the function
+
+```bash
+to_lower () {
+    tr '[[:upper:]]' '[[:lower:]]'
 }
+echo Przemek | to_lower
 ```
 
-## Pytanie
-
-Jeżeli nie wywołamy `wait()`, to dlaczego dziecko znika po zakończeniu rodzica?
-
-```c
-#include <unistd.h>
-
-int main(void)
-{
-    int pid = fork();
-    if (pid == 0)
-        return 0;
-
-    /* Nie wywołujemy tutaj wywołania systemowego wait(), więc nie zakończymy
-       dziecka */
-
-    return 0;
-}
+Results in:
+```
+przemek
 ```
 
-## Odpowiedź
+## Task: Bookmarks
 
-Każdy osierocony proces jest adoptowany przez główny proces (`systemd` albo `init`).
+Create script `./bookmarks.sh` and source it in your
+`~/.bashrc`. The `./bookmarks.sh` should define a function called `goto`, which
+allows the user to navigate and create bookmarks.
 
-```console
-$ pstree
-systemd─┬─ModemManager─── ...
-        ├─NetworkManager─── ...
-        ├─fwupd───4*[{fwupd}]
-        ├─gdm3─┬─gdm-session-wor─┬─gdm-x-session─┬─Xorg───{Xorg}
-        │      │                 │               ├─gnome-session-b─┬─ssh-agent
-        │      │                 │               │                 └─2*[{gnome-session-b}]
-        │      │                 │               └─2*[{gdm-x-session}]
-        │      │                 └─2*[{gdm-session-wor}]
-        │      └─2*[{gdm3}]
-        ├─ X
-       ... ^
-           |
-           '---- tu zostanie zaadoptowany osierocony proces
+```bash
+# Save current working directory as a new bookmark under the same name as directory
+$ goto +
+
+#Same as the above but the bookmark will be called `foo`
+$ goto + foo
+
+# Change directory `cd` to the `foo` bookmark
+$ goto foo
+
+# Should return an errorcode and print a message to standard error
+# that the 'asd' bookmark does not exist
+$ goto asd 
+
+# List all bookmarks
+$ goto
 ```
-Następnie `systemd` lub `init` wywoła na nim `wait()`.
+Bookmarks can be implemented as symbolic links in the `~/.goto` directory.
 
-## Zagadka 0
-
-Ile procesów zostanie utworzonych w poniższym programie?
-
-```c
-#include <unistd.h>
-
-int main(void)
-{
-    fork();
-    fork();
-    fork();
-
-    fork();
-    fork();
-    fork();
-
-    return 0;
-}
-```
-## Zagadka 1
-
-Ile procesów zostanie utworzonych w poniższym programie?
-
-```c
-#include <unistd.h>
-
-int main(void)
-{
-    for (int i = 0; i < 10; ++i)
-        fork();
-
-    return 0;
-}
-```
-## Zagadka 2
-
-Ile procesów zostanie utworzonych w poniższym programie?
-
-```c
-#include <unistd.h>
-
-int main(void)
-{
-    for (int i = 0; i < 10; ++i) {
-        fork();
-        execlp("ls", "ls", NULL);
-    }
-
-    return 0;
-}
-```
-
-# Planista
-
-## Planista w systemie Linux
-
-Decydowaniem, który proces zostanie uruchomiony jako następny zajmuje
-się planista (ang. scheduler).
-
-Zadaniem planisty jest dbanie o podział czasu procesora według ustalonych celów.
-
-Planista w systemie Linux to **Całkowicie Sprawiedliwy Planista** (ang. Completely Fair Scheduler, CFS)
-
-Dba on o to aby każdy proces otrzymał sprawiedliwą część czasu procesora.
-
-Za każdym razem uruchamia ten process który otrzymał do tej pory najmniej
-czasu, w stosunku do należnej części.
-
-## Jak planista reprezentuje procesy
-
-W systemie Linux każdy proces, jest reprezentowany przez strukturę `struct task_struct`
-
-Oto jej ważniejsze pola:
-
-```c
-struct task_struct {
-    struct list_head tasks           /* Wpis na liscie procesów */
-    pid_t pid;                       /* Identyfikator procesu */
-    struct mm_struct *mm             /* Przestrzeń adresowa */
-    struct task_struct *real_parent; /* Prawdziwy rodzic - ten kto wywołał clone() */
-    struct task_struct *parent;      /* Odbiorca SIGCHLD i wait4() */
-    struct list_head children;       /* Dzieci procesu */
-    struct sigpending pending;       /* Lista oczekujących sygnałów */
-    struct files_struct	*files;      /* Otwarte deskryptory plików */
-    void *stack                      /* Wskaznik do stosu jądra dla tego
-                                        procesu - tu są zapisane rejestry */
-    ...
-};
-```
-
-## Lista procesów
-
-System operacyjny przechowuje procesy na liście dwukierunkowej.
-
-![](assets/12.svg)
-
-## Jak CFS przydziela czas procesora
-
-Długości odcinków czasowych są wyliczane dynamicznie, na podstawie docelowego
-opóźnienia (ang. target latency) i priorytetu procesu (niceness i priority),
-dzięki czemu podział czasu procesora jest zawsze sprawiedliwy.
-
-![](assets/10.svg)
-
-## Preemptive vs Cooperative multitasking
-
-W przypadku preemptive multitasking planista może wywłaszczyć proces w dowolnym
-momencie, w przypadku cooperative - tylko w wyznaczonym przez proces momencie.
-**Planista w Linuksie implementuje preemptive multitasking.**
-
-![](assets/11.svg)
-
-## Kiedy następuje wywłaszczenie
-
-CFS może zaplanować wykonywanie innego procesu w momencie wystąpienia przerwania:
-
-Czyli na przykład w momencie:
-
-- naciśnięcia klawisza, odebrania pakietu sieciowego czy innego zdarzenia sprzętowego;
-- przerwania pochodzącego od czasomierza systemowego (Programmable System Timer);
-- wywołania systemowego (np. `open()`, `fork()`, `sleep()`, `write()`).
-
-```c
-int main(void)
-{
-    int x, w;
-    x = 1;                               <---- tu może wystąpić przerwanie, możliwa zmiana procesu
-    printf("%d\n", x);                   <---- wywołanie systemowe write(), możliwa zmiana procesu
-    int fd = open("plik.txt", O_RDONLY); <---- wywołanie systemowe open(), możliwa zmiana procesu
-    w = x + 1;                           <---- tu może wystąpić przerwanie, możliwa zmiana procesu
-    int *g = malloc(sizeof(*g));         <---- malloc() nie jest wywołaniem systemowym ale
-                                               może wywołać brk(), sbrk(), mmap(), które są,
-                                               czyli możliwa zmiana procesu
-}
-```
-
-# Wywołania systemowe
-
-## Co jest efektem kompilacji?
-
-Kod w języku C jest kompilowany do instrukcji maszynowych
-
-```c
-int foo(int a, int b)  _foo: 
-{                      pushq %rbp            // Zapisz podstawe stosu
-	int c = a + b;     movq  %rsp, %rbp      // Weź szczyt stosu jako podstawę
-	return c;          movl  %edi, %eax      // Wrzuć pierwszy argument do %eax
-}                      addl  %esi, %eax      // Dodaj drugi argument do %eax
-                       movl  %eax, -4(%rbp)  // Wynik wrzuć na stos
-                       movl  -4(%rbp), %eax  // Przekaż wartość zwracaną przez %eax
-                       popq  %rbp            // Załaduj zapisaną podstawę stosu podstawę stosu
-                       retq                  // Wróć z powrotem w miejsce wywołania  
-```
-
-## Instrukcje uprzywilejowane
-
-Nie wszystkie instrukcje procesora są dostępne dla procesów użytkownika.
-Procesy użytkownika nie mogą między innymi odczytywać pamięci chronionej, ani wykonywać niektórych instrukcji. Na przykład:
-
-- `LGDT` - nadpisywanie tablicy przerwań;
-- `IN`, `OUT` - obługa urządzeń wejścia/wyjścia;
-- `MOV %eax, %cr3` - modyfikacja tablicy stron.
-
-Procesy mogą jedynie "prosić" system operacyjny, żeby on w ich imieniu
-wykonywał te instrukcje. Tą prośbą są **wywołania systemowe**.
-
-## Wywołania systemowe
-
-Wywołania systemowe, są przerwaniem programowym (ang. software interrupt)
-
-1. Program wykonuje przerwanie (`syscall` lub `int 0x80`), w rejestrach ustawia
-   odpowieni numer przerwania oraz przekazuje odpowiednie argumenty
-2. System operacyjny zaczyna wykonywać procedurę obsługi tego przerwania:
-   zapisuje stan procesora, przełącza stos programu na stos jądra (zmienia rejestr `%esp` - wskaźnik stosu), i wykonuje
-   odpowiednią operację wskazaną numerem wywołania systemowego.
-3. Po wykonaniu wywołania systemowego system operacyjny przywraca stan procesora (w tym stos procesu)
-   i wznawiane jest wykonywanie programu.
-
-```asm
-message:
-    .asciz "Hello world\n"
-.set message_size, . - message
-...
-movl $1, %edi
-leaq message(%rip), %rsi
-movq $message_size, %rdx
-movq $1, %rax             ;1 is sys_write syscall number
-syscall
-```
-
-## Wywołania systemowe a funkcje
-
-Biblioteka standardowa języka C (np. `glibc`, `musl` lub `uClibc`), implementuje
-funkcje, które uruchamiają wywołania systemowe o podobnych nazwach.
-Oprócz tego implementuje jeszcze dodatkową funkcjonalność oraz funkcje, które
-nie są wywołaniami systemowymi.
-
-Przykłady:
-
-|  funkcja   | typ                                            |
-|------------|------------------------------------------------|
-| `open()`   | `syscall(SYS_open, ...)`                       |
-| `fork()`   | `syscall(SYS_fork, ...)`                       |
-| `write()`  | `syscall(SYS_write, ...)`                      |
-| `read()`   | `syscall(SYS_read, ...)`                       |
-| `printf()` | `syscall(SYS_write)` + dodatkowa funkcjonalność|
-| `malloc()` | `syscall(SYS_brk)` + dodatkowa funkcjonalność  |
-| `fopen()`  | `syscall(SYS_open)` + dodatkowa funkcjonalność |
-| `strlen()` | funkcja biblioteczna                           |
-| `memcpy()` | funkcja biblioteczna                           |
-
-# Pamięć procesu
-
-## Zmienne reprezentują komórki pamięci
-
-Każda zmienna reprezentuje pewną komórkę pamięci.
-
-```c
-int y = 2; /* Zmienna w sekcji .data */
-
-int main(void)
-{
-    int x; /* Zmienna na stosie */
-
-    printf("%p\n", &x);
-    printf("%p\n", &y);
-
-    return 0;
-}
-```
-
-## Pamięć wirtualna
-
-Proces operuje na wirtualnych adresach pamięci, które są mapowane do
-fizycznych adresów, przez tabele stron. Instruuje ona jednostkę zarządzania
-pamięcią (ang. Memory Management Unit) w jaki sposób ma mapować pamięć.
-
-![](assets/1.svg)
-
-## Sekcje pamięci 
-
-W systemie Linux skompilowany program będzie miał odpowiednią strukturę w pamięci:
-
-```c
-int x;  /* Niezainicjalizowane dane (.bss) */
-int y = 3; /* Zainicjalizowane dane (.data) */
-void foo(int x) /* Argumenty w rejestrach lub na stosie */     ---.
-{                                                                 |
-    static int x; /* Niezainicjalizowane dane (.bss) */           |
-    static int y = 4; /* Zainicjalizowane dane (.data) */         |
-}                                                                 |
-int main(void)                                                    |    kod
-{                                                                 |___ programu
-    int x; /* Alokacja na stosie */                               |    umieszczany
-    int *y = malloc(1024); /* Wskaźnik na stosie, */              |    w sekcji .text
-                           /* a blok pamięci na stercie */        |
-    foo(1); /* Adres powrotu na stosie,                           |
-               argumenty w rejestrach lub na stosie  */           |
-    return 0;                                                     |
-}                                                              ---'
-
-```
-
-## Sekcje pamięci procesu
-
-Pamięć procesu podzielona jest na sekcje, w których znajdują się "podobnego" rodzaju dane.
-
-
-![](assets/2.svg)
-
-## Przykład sekcji pamięci - proces `yes`
-
-```console
-$ cat /proc/39299/maps
-56148e969000-56148e96b000 r--p 00000000 08:05 24118661   /usr/bin/yes
-56148e96b000-56148e96f000 r-xp 00002000 08:05 24118661   /usr/bin/yes
-56148e96f000-56148e971000 r--p 00006000 08:05 24118661   /usr/bin/yes
-56148e972000-56148e973000 r--p 00008000 08:05 24118661   /usr/bin/yes
-56148e973000-56148e974000 rw-p 00009000 08:05 24118661   /usr/bin/yes
-56148f694000-56148f6b5000 rw-p 00000000 00:00 0          [heap]
-7f9f89876000-7f9f8a8cc000 r--p 00000000 08:05 24117276   /usr/lib/locale/locale-archive
-7f9f8a8cc000-7f9f8a8ee000 r--p 00000000 08:05 24122481   /usr/lib/x86_64-linux-gnu/libc-2.31.so
-7f9f8a8ee000-7f9f8aa66000 r-xp 00022000 08:05 24122481   /usr/lib/x86_64-linux-gnu/libc-2.31.so
-7f9f8aa66000-7f9f8aab4000 r--p 0019a000 08:05 24122481   /usr/lib/x86_64-linux-gnu/libc-2.31.so
-7f9f8aab4000-7f9f8aab8000 r--p 001e7000 08:05 24122481   /usr/lib/x86_64-linux-gnu/libc-2.31.so
-7f9f8aab8000-7f9f8aaba000 rw-p 001eb000 08:05 24122481   /usr/lib/x86_64-linux-gnu/libc-2.31.so
-7f9f8aaba000-7f9f8aac0000 rw-p 00000000 00:00 0
-7f9f8aae0000-7f9f8aae1000 r--p 00000000 08:05 24122477   /usr/lib/x86_64-linux-gnu/ld-2.31.so
-7f9f8aae1000-7f9f8ab04000 r-xp 00001000 08:05 24122477   /usr/lib/x86_64-linux-gnu/ld-2.31.so
-7f9f8ab04000-7f9f8ab0c000 r--p 00024000 08:05 24122477   /usr/lib/x86_64-linux-gnu/ld-2.31.so
-7f9f8ab0d000-7f9f8ab0e000 r--p 0002c000 08:05 24122477   /usr/lib/x86_64-linux-gnu/ld-2.31.so
-7f9f8ab0e000-7f9f8ab0f000 rw-p 0002d000 08:05 24122477   /usr/lib/x86_64-linux-gnu/ld-2.31.so
-7f9f8ab0f000-7f9f8ab10000 rw-p 00000000 00:00 0
-7ffe6a478000-7ffe6a499000 rw-p 00000000 00:00 0          [stack]
-7ffe6a5cb000-7ffe6a5cf000 r--p 00000000 00:00 0          [vvar]
-7ffe6a5cf000-7ffe6a5d1000 r-xp 00000000 00:00 0          [vdso]
-ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0  [vsyscall]
-```
-
-## Address space layout randomization
-
-Adresy sekcji są losowe, aby utrudnić manipulacje na pamięci atakującemu.
-
-![](assets/3.svg)
-
-## KASLR
-
-Jądro jest mapowane pod losowym adresem
-
-![](assets/4.svg)
-
-## KAISER
-
-Mapowana jest tylko niezbędna część jądra. Po przełączeniu się w tryb jądra (przy wywołaniach systemowych)
-tabela stron jest przełączana na pełną wersję (zmiana rejestru CR3).
-
-![](assets/5.svg)
-
-## Copy-on-write
-
-Strony pamięci wirtualnej nowego procesu oznaczone są jako tylko do odczytu.
-Próba nadpisania skutkuje wyjątkiem Page Fault, którego obsługa pozwala systemowi
-operacyjnemu skopiować stronę
-
-![](assets/0.svg)
-
-# Dziękuję za uwagę
-
-## Dalsza lektura
-
-- **Książki**
-    - Love Robert. 2010. Linux Kernel Development. Pearson Education.
-    - Love Robert. 2013. Linux System Programming. O'REILLY.
-    - Stevens Richard W., Rago Stephen A., Advanced Programming in the UNIX® Environment, Third Edition. Addison-Wesley.
-- **Artykuły**
-    - https://lwn.net/Articles/738975/
-    - https://samwho.dev/blog/context-switching-on-x86/
-- **Manual**
-    - `man 2 fork`
-    - `man 2 wait`
-    - `man 3 exec`
+# Thank you
