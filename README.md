@@ -145,7 +145,7 @@ $ ln -s bar baz
 Download the following archive using `wget` program:
 
 ```
-$ wget czarnota.github.io/bashtraining/task-land.tar.gz
+$ wget czarnota.github.io/data/task-land.tar.gz
 ```
 
 1. Extract the archive
