@@ -1578,8 +1578,8 @@ if [ -n "$x" -a "$x" == "foo" ]; then echo pass; fi
 
 ## The built-in operator `[[`
 
-Bash provides built-in operator `[[`, which i. a. introduces some syntactic sugar
-(`"&&"`) and allows you to safely omit quoting of the variables:
+The operator `[[` introduces some syntactic sugar
+and allows you to safely omit quoting of the variables.
 ```bash
 if [[ $x -eq 1 ]]; then    # [ $x -eq 1 ] would not work without quotes is $x was empty
     echo x is 1
@@ -1597,6 +1597,8 @@ Checking if `x` is not empty and equals `"foo"`
 ```bash
 if [[ -n "$x" && "$x" == "foo" ]]; then echo pass; fi
 ```
+
+It is not standarized by POSIX, if portability is required use `[`
 
 ## Question: What is going on here?
 
@@ -1649,6 +1651,241 @@ Checking if variable value consists of 5 characters:
 
 More information in Bash man page `man bash | grep -E "Pattern Matching$" -A 45`
 
+## Extended Regular Expressions
+
+In addition to Pattern Matching, Bash supports also the Extended
+Regular Expressions:
+```bash
+[[ $x =~ ^foo.* ]]
+```
+
+Checking if variable value ends with an even number:
+```bash
+[[ $x =~ [02468]$ ]]
+```
+
+Checking if variable value consists of 5 characters:
+```bash
+[[ $x =~ ^.....$ ]]
+```
+
+## Arithmetic operations
+
+Evaluating an arithmetic expressions using `(())` operator:
+```bash
+$ b=1
+$ ((a = b + 20 / 10))
+$ echo $a
+2
+```
+Incrementing a variable:
+```bash
+((i++))
+```
+Obtaining an expression value using `$(())`
+```bash
+$ a="$((1 + 1))"
+$ echo $((a + 2))
+4
+```
+
+## Portable arithmetic operations 
+
+There are multiple ways of evaluating arithmetic operations.
+Additionally to the `(())` and `$(())` there are:
+
+The `let` built-in:
+```bash
+let "x = a + b"
+```
+
+The **deprecated** `$[]` operator:
+```bash
+x=$[a + b]
+```
+
+The `$(())` should be preferred if portability is required, because it is
+standarized by POSIX.
+
+## Task: Converter
+
+Create script that will convert decimals to hexadecimals and hexadecimals
+to decimal.
+
+Example usage:
+```bash
+$ ./conv 0xA
+10
+$ ./conv 10
+0xA
+```
+
+You will most likely need:
+
+- `echo $((...))`
+- `printf`
+- `$1`
+- `if`
+- `[[ ... ]]` or `grep`
+
+## It is better to ask for forgiveness than for permission
+
+**In some cases** instead of checking all possible failure cases, you can
+attempt to execute a command and react to an error.
+
+Asking for permission:
+```bash
+if [ -r "f.txt" ]; then
+    cat f.txt
+else
+    echo f is not readable
+fi
+```
+
+Asking for forgiveness:
+```bash
+if ! cat f.txt 2> /dev/null; then
+    echo f is not readable
+fi
+```
+
+## While loop
+
+Bash supports `while` loop
+```bash
+while COMMANDS; do
+    COMMANDS
+done
+```
+
+Example: running `ping` until it succeeds
+```bash
+while ! ping -c1 10.0.0.1; do
+    echo "Timeout. Retrying..."
+done
+```
+
+## Until loop
+
+Bash supports `until` loop
+```bash
+until COMMANDS; do
+    COMMANDS
+done
+```
+
+Example: running `ping` until it succeeds
+```bash
+until ping -c1 10.0.0.1; do
+    echo "Timeout. Retrying..."
+done
+```
+
+## Case construct
+
+There is a `case` statement
+
+```bash
+case VALUE in
+    PATTERN1) COMMANDS ;;
+    PATTERN2) COMMANDS ;;
+    ...
+    *) COMMANDS ;;
+esac
+```
+Example:
+```bash
+read -p"Place and order: " order
+case "$order" in
+    fish) echo "enjoy your fish" ;;
+    pizza) echo "enjoy your pizza" ;;
+    pasta) echo "enjoy your pasta" ;;
+    *) echo "sorry, we do not have it" ;;
+esac
+```
+
+## `for ... in ...` loop
+
+The `for` loop takes a form of:
+```bash
+for VAR in TOKEN1 TOKEN2 ... TOKENN; do
+    COMMANDS
+done
+```
+
+Print numbers from 1 to 5
+```bash
+for i in 1 2 3 4 5; do
+    echo "$i"
+done
+```
+Do the same using `seq`
+```bash
+for i in $(seq 1 5); do echo "$i"; done
+```
+
+## `for ... in ...` loop - more examples
+
+```bash
+# This will print `1 2 3 4 5` once:
+for i in "$(seq 1 5)"; do
+    echo "$i";
+done
+
+# DIY version of `ls`
+for i in *; do
+    echo "$i"
+done
+
+# Iterate over script arguments
+for i; do
+    echo "$i"
+done
+
+# Generate emails
+for email in {john,jane,anna}@example.com; do
+    echo "$email"
+done
+```
+
+## `for (())` loop
+
+There is another version of `for` loop which is similat to `for` loop
+from `C` language.
+
+```bash
+for (( expr1; expr2; expr3 )); do
+    COMMANDS
+done
+```
+
+Print numbers from `0` to `9`.
+```bash
+for ((i = 0; i < 10; ++i)); do
+    echo "$i"
+done
+```
+
+Print all powers of 2.
+```bash
+for ((i = 1; i > 0; <<= i)); do echo "$i"; done
+```
+
+## Loops have standard input and standard ouput
+
+Do-it-yourself version of `/usr/bin/yes`:
+```bash
+while true; do
+    echo y
+done | sudo apt install $PACKAGES
+```
+
+Ping every hostname in `/etc/hosts`:
+```bash
+cat /etc/hosts | while read ip hostname; do
+    ping -c1 "$ip" 2>/dev/null
+done
+```
 
 ## Wielozadaniowość na wielu procesorach/rdzeniach
 

@@ -1307,7 +1307,7 @@ strace: Process 871287 attached
 </section>
 <section id="the-built-in-operator" class="level2">
 <h2>The built-in operator <code>[[</code></h2>
-<p>Bash provides built-in operator <code>[[</code>, which i. a. introduces some syntactic sugar (<code>"&amp;&amp;"</code>) and allows you to safely omit quoting of the variables:</p>
+<p>The operator <code>[[</code> introduces some syntactic sugar and allows you to safely omit quoting of the variables.</p>
 <div class="sourceCode" id="cb167"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb167-1" title="1"><span class="kw">if [[</span> <span class="va">$x</span> <span class="ot">-eq</span> 1<span class="kw"> ]]</span>; <span class="kw">then</span>    <span class="co"># [ $x -eq 1 ] would not work without quotes is $x was empty</span></a>
 <a class="sourceLine" id="cb167-2" title="2">    <span class="bu">echo</span> x is 1</a>
 <a class="sourceLine" id="cb167-3" title="3"><span class="kw">fi</span></a></code></pre></div>
@@ -1315,6 +1315,7 @@ strace: Process 871287 attached
 <div class="sourceCode" id="cb168"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb168-1" title="1"><span class="kw">if [[</span> <span class="va">$x</span> <span class="ot">-lt</span> 1<span class="kw"> ]]</span>; <span class="kw">then</span> <span class="bu">echo</span> x is less than 1<span class="kw">;</span> <span class="kw">fi</span></a></code></pre></div>
 <p>Checking if <code>x</code> is not empty and equals <code>"foo"</code></p>
 <div class="sourceCode" id="cb169"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb169-1" title="1"><span class="kw">if [[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$x</span><span class="st">&quot;</span> &amp;&amp; <span class="st">&quot;</span><span class="va">$x</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;foo&quot;</span><span class="kw"> ]]</span>; <span class="kw">then</span> <span class="bu">echo</span> pass<span class="kw">;</span> <span class="kw">fi</span></a></code></pre></div>
+<p>It is not standarized by POSIX, if portability is required use <code>[</code></p>
 </section>
 <section id="question-what-is-going-on-here" class="level2">
 <h2>Question: What is going on here?</h2>
@@ -1348,6 +1349,168 @@ strace: Process 871287 attached
 <div class="sourceCode" id="cb176"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb176-1" title="1"><span class="kw">[[</span> <span class="va">$x</span> <span class="ot">=</span> ?????<span class="kw"> ]]</span></a></code></pre></div>
 <p>More information in Bash man page <code>man bash | grep -E "Pattern Matching$" -A 45</code></p>
 </section>
+<section id="extended-regular-expressions" class="level2">
+<h2>Extended Regular Expressions</h2>
+<p>In addition to Pattern Matching, Bash supports also the Extended Regular Expressions:</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb177-1" title="1"><span class="kw">[[</span> <span class="va">$x</span> =~ ^foo.*<span class="kw"> ]]</span></a></code></pre></div>
+<p>Checking if variable value ends with an even number:</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb178-1" title="1"><span class="kw">[[</span> <span class="va">$x</span> =~ [02468]$<span class="kw"> ]]</span></a></code></pre></div>
+<p>Checking if variable value consists of 5 characters:</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb179-1" title="1"><span class="kw">[[</span> <span class="va">$x</span> =~ ^.....$<span class="kw"> ]]</span></a></code></pre></div>
+</section>
+<section id="arithmetic-operations" class="level2">
+<h2>Arithmetic operations</h2>
+<p>Evaluating an arithmetic expressions using <code>(())</code> operator:</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb180-1" title="1">$ <span class="va">b=</span>1</a>
+<a class="sourceLine" id="cb180-2" title="2">$ <span class="kw">((</span>a = b + 20 / 10<span class="kw">))</span></a>
+<a class="sourceLine" id="cb180-3" title="3">$ <span class="bu">echo</span> <span class="va">$a</span></a>
+<a class="sourceLine" id="cb180-4" title="4"><span class="ex">2</span></a></code></pre></div>
+<p>Incrementing a variable:</p>
+<div class="sourceCode" id="cb181"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb181-1" title="1"><span class="kw">((</span>i++<span class="kw">))</span></a></code></pre></div>
+<p>Obtaining an expression value using <code>$(())</code></p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb182-1" title="1">$ <span class="va">a=</span><span class="st">&quot;</span><span class="va">$((</span>1 + 1<span class="va">))</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb182-2" title="2">$ <span class="bu">echo</span> <span class="va">$((</span>a + 2<span class="va">))</span></a>
+<a class="sourceLine" id="cb182-3" title="3"><span class="ex">4</span></a></code></pre></div>
+</section>
+<section id="portable-arithmetic-operations" class="level2">
+<h2>Portable arithmetic operations</h2>
+<p>There are multiple ways of evaluating arithmetic operations. Additionally to the <code>(())</code> and <code>$(())</code> there are:</p>
+<p>The <code>let</code> built-in:</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb183-1" title="1"><span class="bu">let</span> <span class="st">&quot;x = a + b&quot;</span></a></code></pre></div>
+<p>The <strong>deprecated</strong> <code>$[]</code> operator:</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb184-1" title="1"><span class="va">x=</span>$[<span class="ex">a</span> + b]</a></code></pre></div>
+<p>The <code>$(())</code> should be preferred if portability is required, because it is standarized by POSIX.</p>
+</section>
+<section id="task-converter" class="level2">
+<h2>Task: Converter</h2>
+<p>Create script that will convert decimals to hexadecimals and hexadecimals to decimal.</p>
+<p>Example usage:</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb185-1" title="1">$ <span class="ex">./conv</span> 0xA</a>
+<a class="sourceLine" id="cb185-2" title="2"><span class="ex">10</span></a>
+<a class="sourceLine" id="cb185-3" title="3">$ <span class="ex">./conv</span> 10</a>
+<a class="sourceLine" id="cb185-4" title="4"><span class="ex">0xA</span></a></code></pre></div>
+<p>You will most likely need:</p>
+<ul class="incremental">
+<li><code>echo $((...))</code></li>
+<li><code>printf</code></li>
+<li><code>$1</code></li>
+<li><code>if</code></li>
+<li><code>[[ ... ]]</code> or <code>grep</code></li>
+</ul>
+</section>
+<section id="it-is-better-to-ask-for-forgiveness-than-for-permission" class="level2">
+<h2>It is better to ask for forgiveness than for permission</h2>
+<p><strong>In some cases</strong> instead of checking all possible failure cases, you can attempt to execute a command and react to an error.</p>
+<p>Asking for permission:</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb186-1" title="1"><span class="kw">if</span><span class="bu"> [</span> <span class="ot">-r</span> <span class="st">&quot;f.txt&quot;</span><span class="bu"> ]</span>; <span class="kw">then</span></a>
+<a class="sourceLine" id="cb186-2" title="2">    <span class="fu">cat</span> f.txt</a>
+<a class="sourceLine" id="cb186-3" title="3"><span class="kw">else</span></a>
+<a class="sourceLine" id="cb186-4" title="4">    <span class="bu">echo</span> f is not readable</a>
+<a class="sourceLine" id="cb186-5" title="5"><span class="kw">fi</span></a></code></pre></div>
+<p>Asking for forgiveness:</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb187-1" title="1"><span class="kw">if</span> ! <span class="fu">cat</span> f.txt <span class="op">2&gt;</span> /dev/null<span class="kw">;</span> <span class="kw">then</span></a>
+<a class="sourceLine" id="cb187-2" title="2">    <span class="bu">echo</span> f is not readable</a>
+<a class="sourceLine" id="cb187-3" title="3"><span class="kw">fi</span></a></code></pre></div>
+</section>
+<section id="while-loop" class="level2">
+<h2>While loop</h2>
+<p>Bash supports <code>while</code> loop</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb188-1" title="1"><span class="kw">while</span> <span class="ex">COMMANDS</span><span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb188-2" title="2">    <span class="ex">COMMANDS</span></a>
+<a class="sourceLine" id="cb188-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Example: running <code>ping</code> until it succeeds</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb189-1" title="1"><span class="kw">while</span> ! <span class="fu">ping</span> -c1 10.0.0.1<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb189-2" title="2">    <span class="bu">echo</span> <span class="st">&quot;Timeout. Retrying...&quot;</span></a>
+<a class="sourceLine" id="cb189-3" title="3"><span class="kw">done</span></a></code></pre></div>
+</section>
+<section id="until-loop" class="level2">
+<h2>Until loop</h2>
+<p>Bash supports <code>until</code> loop</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb190-1" title="1"><span class="kw">until</span> <span class="ex">COMMANDS</span><span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb190-2" title="2">    <span class="ex">COMMANDS</span></a>
+<a class="sourceLine" id="cb190-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Example: running <code>ping</code> until it succeeds</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb191-1" title="1"><span class="kw">until</span> <span class="fu">ping</span> -c1 10.0.0.1<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb191-2" title="2">    <span class="bu">echo</span> <span class="st">&quot;Timeout. Retrying...&quot;</span></a>
+<a class="sourceLine" id="cb191-3" title="3"><span class="kw">done</span></a></code></pre></div>
+</section>
+<section id="case-construct" class="level2">
+<h2>Case construct</h2>
+<p>There is a <code>case</code> statement</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb192-1" title="1"><span class="kw">case</span> VALUE<span class="kw"> in</span></a>
+<a class="sourceLine" id="cb192-2" title="2">    PATTERN1<span class="kw">)</span> <span class="ex">COMMANDS</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb192-3" title="3">    <span class="ex">PATTERN2</span>) <span class="ex">COMMANDS</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb192-4" title="4">    <span class="ex">...</span></a>
+<a class="sourceLine" id="cb192-5" title="5">    <span class="ex">*</span>) <span class="ex">COMMANDS</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb192-6" title="6"><span class="kw">esac</span></a></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb193-1" title="1"><span class="bu">read</span> -p<span class="st">&quot;Place and order: &quot;</span> <span class="va">order</span></a>
+<a class="sourceLine" id="cb193-2" title="2"><span class="kw">case</span> <span class="st">&quot;</span><span class="va">$order</span><span class="st">&quot;</span><span class="kw"> in</span></a>
+<a class="sourceLine" id="cb193-3" title="3">    fish<span class="kw">)</span> <span class="bu">echo</span> <span class="st">&quot;enjoy your fish&quot;</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb193-4" title="4">    <span class="ex">pizza</span>) <span class="bu">echo</span> <span class="st">&quot;enjoy your pizza&quot;</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb193-5" title="5">    <span class="ex">pasta</span>) <span class="bu">echo</span> <span class="st">&quot;enjoy your pasta&quot;</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb193-6" title="6">    <span class="ex">*</span>) <span class="bu">echo</span> <span class="st">&quot;sorry, we do not have it&quot;</span> <span class="kw">;;</span></a>
+<a class="sourceLine" id="cb193-7" title="7"><span class="kw">esac</span></a></code></pre></div>
+</section>
+<section id="for-...-in-...-loop" class="level2">
+<h2><code>for ... in ...</code> loop</h2>
+<p>The <code>for</code> loop takes a form of:</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb194-1" title="1"><span class="kw">for</span> <span class="ex">VAR</span> in TOKEN1 TOKEN2 ... TOKENN<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb194-2" title="2">    <span class="ex">COMMANDS</span></a>
+<a class="sourceLine" id="cb194-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Print numbers from 1 to 5</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb195-1" title="1"><span class="kw">for</span> <span class="ex">i</span> in 1 2 3 4 5<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb195-2" title="2">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb195-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Do the same using <code>seq</code></p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb196-1" title="1"><span class="kw">for</span> <span class="ex">i</span> in <span class="va">$(</span><span class="fu">seq</span> 1 5<span class="va">)</span><span class="kw">;</span> <span class="kw">do</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">done</span></a></code></pre></div>
+</section>
+<section id="for-...-in-...-loop---more-examples" class="level2">
+<h2><code>for ... in ...</code> loop - more examples</h2>
+<div class="sourceCode" id="cb197"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb197-1" title="1"><span class="co"># This will print `1 2 3 4 5` once:</span></a>
+<a class="sourceLine" id="cb197-2" title="2"><span class="kw">for</span> <span class="ex">i</span> in <span class="st">&quot;</span><span class="va">$(</span><span class="fu">seq</span> 1 5<span class="va">)</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb197-3" title="3">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span><span class="kw">;</span></a>
+<a class="sourceLine" id="cb197-4" title="4"><span class="kw">done</span></a>
+<a class="sourceLine" id="cb197-5" title="5"></a>
+<a class="sourceLine" id="cb197-6" title="6"><span class="co"># DIY version of `ls`</span></a>
+<a class="sourceLine" id="cb197-7" title="7"><span class="kw">for</span> <span class="ex">i</span> in *<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb197-8" title="8">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb197-9" title="9"><span class="kw">done</span></a>
+<a class="sourceLine" id="cb197-10" title="10"></a>
+<a class="sourceLine" id="cb197-11" title="11"><span class="co"># Iterate over script arguments</span></a>
+<a class="sourceLine" id="cb197-12" title="12"><span class="kw">for</span> <span class="ex">i</span><span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb197-13" title="13">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb197-14" title="14"><span class="kw">done</span></a>
+<a class="sourceLine" id="cb197-15" title="15"></a>
+<a class="sourceLine" id="cb197-16" title="16"><span class="co"># Generate emails</span></a>
+<a class="sourceLine" id="cb197-17" title="17"><span class="kw">for</span> <span class="ex">email</span> in <span class="dt">{john,jane,anna}</span>@example.com<span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb197-18" title="18">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$email</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb197-19" title="19"><span class="kw">done</span></a></code></pre></div>
+</section>
+<section id="for-loop" class="level2">
+<h2><code>for (())</code> loop</h2>
+<p>There is another version of <code>for</code> loop which is similat to <code>for</code> loop from <code>C</code> language.</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb198-1" title="1"><span class="kw">for</span> <span class="kw">((</span> expr1; expr2; expr3 <span class="kw">))</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb198-2" title="2">    <span class="ex">COMMANDS</span></a>
+<a class="sourceLine" id="cb198-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Print numbers from <code>0</code> to <code>9</code>.</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb199-1" title="1"><span class="kw">for</span> <span class="kw">((</span>i = 0; i &lt; 10; ++i<span class="kw">))</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb199-2" title="2">    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb199-3" title="3"><span class="kw">done</span></a></code></pre></div>
+<p>Print all powers of 2.</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb200-1" title="1"><span class="kw">for</span> <span class="kw">((</span>i = 1; i &gt; 0; &lt;&lt;= i<span class="kw">))</span>; <span class="kw">do</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">done</span></a></code></pre></div>
+</section>
+<section id="loops-have-standard-input-and-standard-ouput" class="level2">
+<h2>Loops have standard input and standard ouput</h2>
+<p>Do-it-yourself version of <code>/usr/bin/yes</code>:</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb201-1" title="1"><span class="kw">while</span> <span class="fu">true</span><span class="kw">;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb201-2" title="2">    <span class="bu">echo</span> y</a>
+<a class="sourceLine" id="cb201-3" title="3"><span class="kw">done</span> <span class="kw">|</span> <span class="fu">sudo</span> apt install <span class="va">$PACKAGES</span></a></code></pre></div>
+<p>Ping every hostname in <code>/etc/hosts</code>:</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb202-1" title="1"><span class="fu">cat</span> /etc/hosts <span class="kw">|</span> <span class="kw">while</span> <span class="bu">read</span> <span class="va">ip</span> <span class="va">hostname</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb202-2" title="2">    <span class="fu">ping</span> -c1 <span class="st">&quot;</span><span class="va">$ip</span><span class="st">&quot;</span> <span class="op">2&gt;</span>/dev/null</a>
+<a class="sourceLine" id="cb202-3" title="3"><span class="kw">done</span></a></code></pre></div>
+</section>
 <section id="wielozadaniowość-na-wielu-procesorachrdzeniach" class="level2">
 <h2>Wielozadaniowość na wielu procesorach/rdzeniach</h2>
 <p>W przypadku wielu procesorów, system operacyjny może uruchamiać procesy rzeczywiście równolegle</p>
@@ -1361,7 +1524,7 @@ strace: Process 871287 attached
 <section id="afiniczność-procesora" class="level2">
 <h2>Afiniczność procesora</h2>
 <p>W Linuksie możemy określić na których procesorach będzie wykonywany proces</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb177-1" title="1">$ <span class="ex">taskset</span> -p 0x11 9726</a></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb203-1" title="1">$ <span class="ex">taskset</span> -p 0x11 9726</a></code></pre></div>
 <p>Podobne ustawienie istnieje również w menedżerze zadań systemu Windows</p>
 <p><img src="assets/affinity.png" /></p>
 </section>
@@ -1482,99 +1645,99 @@ systemd─┬─ModemManager───2*[{ModemManager}]
 <section id="wywołanie-systemowe---fork" class="level2">
 <h2>Wywołanie systemowe - <code>fork()</code></h2>
 <p>Do tworzenia procesów, służy wywołanie systemowe <code>fork()</code>. Wywołanie <code>fork()</code> tworzy proces potomny, który jest “klonem” procesu rodzica.</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb182-1" title="1">   <span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb182-2" title="2">   {</a>
-<a class="sourceLine" id="cb182-3" title="3">       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
-<a class="sourceLine" id="cb182-4" title="4">--&gt;    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb182-5" title="5">       ...</a>
-<a class="sourceLine" id="cb182-6" title="6">   }</a></code></pre></div>
+<div class="sourceCode" id="cb208"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb208-1" title="1">   <span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb208-2" title="2">   {</a>
+<a class="sourceLine" id="cb208-3" title="3">       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
+<a class="sourceLine" id="cb208-4" title="4">--&gt;    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb208-5" title="5">       ...</a>
+<a class="sourceLine" id="cb208-6" title="6">   }</a></code></pre></div>
 <p>Po wywołaniu <code>fork()</code>:</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb183-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
-<a class="sourceLine" id="cb183-2" title="2">   <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb183-3" title="3">   {                                    {</a>
-<a class="sourceLine" id="cb183-4" title="4">       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
-<a class="sourceLine" id="cb183-5" title="5">--&gt;    <span class="dt">int</span> pid = fork();             --&gt;    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb183-6" title="6">       ...                                  ...</a>
-<a class="sourceLine" id="cb183-7" title="7">   }                                    }</a></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb209-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
+<a class="sourceLine" id="cb209-2" title="2">   <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb209-3" title="3">   {                                    {</a>
+<a class="sourceLine" id="cb209-4" title="4">       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);</a>
+<a class="sourceLine" id="cb209-5" title="5">--&gt;    <span class="dt">int</span> pid = fork();             --&gt;    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb209-6" title="6">       ...                                  ...</a>
+<a class="sourceLine" id="cb209-7" title="7">   }                                    }</a></code></pre></div>
 </section>
 <section id="wartość-zwracana-fork" class="level2">
 <h2>Wartość zwracana <code>fork()</code></h2>
 <p>Wywołanie <code>fork()</code> w procesie potomnym zwraca <code>0</code>, natomiast w procesie rodzica wartością zwróconą będzie PID procesu potomnego.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb184-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
-<a class="sourceLine" id="cb184-2" title="2">    <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb184-3" title="3">    {                                    {</a>
-<a class="sourceLine" id="cb184-4" title="4">        printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>)j</a>
-<a class="sourceLine" id="cb184-5" title="5">        <span class="dt">int</span> pid = fork();                    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb184-6" title="6">        <span class="cf">if</span> (pid == <span class="dv">0</span>)                        <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb184-7" title="7">            printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);        --&gt;        printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);   </a>
-<a class="sourceLine" id="cb184-8" title="8">        <span class="cf">else</span>                                 <span class="cf">else</span></a>
-<a class="sourceLine" id="cb184-9" title="9"> --&gt;        printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);                  printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);  </a>
-<a class="sourceLine" id="cb184-10" title="10">        <span class="cf">return</span> <span class="dv">0</span>;                            <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb184-11" title="11">    }                                    }</a></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb210-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
+<a class="sourceLine" id="cb210-2" title="2">    <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb210-3" title="3">    {                                    {</a>
+<a class="sourceLine" id="cb210-4" title="4">        printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>)j</a>
+<a class="sourceLine" id="cb210-5" title="5">        <span class="dt">int</span> pid = fork();                    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb210-6" title="6">        <span class="cf">if</span> (pid == <span class="dv">0</span>)                        <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb210-7" title="7">            printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);        --&gt;        printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);   </a>
+<a class="sourceLine" id="cb210-8" title="8">        <span class="cf">else</span>                                 <span class="cf">else</span></a>
+<a class="sourceLine" id="cb210-9" title="9"> --&gt;        printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);                  printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);  </a>
+<a class="sourceLine" id="cb210-10" title="10">        <span class="cf">return</span> <span class="dv">0</span>;                            <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb210-11" title="11">    }                                    }</a></code></pre></div>
 <p>Na podstawie wartości zwracanej, możemy określić czy “znajdujemy” się w procesie potomnym czy w procesie rodzica.</p>
 </section>
 <section id="oczekiwanie-na-zakończenie-procesu-potomnego" class="level2">
 <h2>Oczekiwanie na zakończenie procesu potomnego</h2>
 <p>Do oczekiwania na zakończenie procesu potomnego służy, wywołanie systemowe <code>wait()</code>, które blokuje program do momentu zakończenia dowolnego procesu potomnego.</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb185-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
-<a class="sourceLine" id="cb185-2" title="2">    <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb185-3" title="3">    {                                    {</a>
-<a class="sourceLine" id="cb185-4" title="4">        printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>)j</a>
-<a class="sourceLine" id="cb185-5" title="5">        <span class="dt">int</span> pid = fork();                    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb185-6" title="6">        <span class="cf">if</span> (pid == <span class="dv">0</span>) {                      <span class="cf">if</span> (pid == <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb185-7" title="7">            printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);                   printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);   </a>
-<a class="sourceLine" id="cb185-8" title="8">        } <span class="cf">else</span> {                             } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb185-9" title="9">            printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);                  printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);  </a>
-<a class="sourceLine" id="cb185-10" title="10"> --&gt;        wait(NULL);                          wait(NULL);</a>
-<a class="sourceLine" id="cb185-11" title="11">        }                                    }</a>
-<a class="sourceLine" id="cb185-12" title="12">        <span class="cf">return</span> <span class="dv">0</span>;                     --&gt;    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb185-13" title="13">    }                                    }</a></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb211-1" title="1">   <span class="co">/* rodzic */</span>                         <span class="co">/* dziecko */</span></a>
+<a class="sourceLine" id="cb211-2" title="2">    <span class="dt">int</span> main(<span class="dt">void</span>)                       <span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb211-3" title="3">    {                                    {</a>
+<a class="sourceLine" id="cb211-4" title="4">        printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>);       printf(<span class="st">&quot;przed utworzeniem</span><span class="sc">\n</span><span class="st">&quot;</span>)j</a>
+<a class="sourceLine" id="cb211-5" title="5">        <span class="dt">int</span> pid = fork();                    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb211-6" title="6">        <span class="cf">if</span> (pid == <span class="dv">0</span>) {                      <span class="cf">if</span> (pid == <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb211-7" title="7">            printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);                   printf(<span class="st">&quot;child</span><span class="sc">\n</span><span class="st">&quot;</span>);   </a>
+<a class="sourceLine" id="cb211-8" title="8">        } <span class="cf">else</span> {                             } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb211-9" title="9">            printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);                  printf(<span class="st">&quot;parent</span><span class="sc">\n</span><span class="st">&quot;</span>);  </a>
+<a class="sourceLine" id="cb211-10" title="10"> --&gt;        wait(NULL);                          wait(NULL);</a>
+<a class="sourceLine" id="cb211-11" title="11">        }                                    }</a>
+<a class="sourceLine" id="cb211-12" title="12">        <span class="cf">return</span> <span class="dv">0</span>;                     --&gt;    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb211-13" title="13">    }                                    }</a></code></pre></div>
 </section>
 <section id="wait-obsługa-błędów" class="level2">
 <h2><code>wait()</code> obsługa błędów</h2>
 <p>Wywołanie systemowe <code>wait()</code> zwraca <code>pid</code> zakończonego procesu. Jeżeli wartość jest ujemna to wystąpił błąd. Błąd uzyskać można odczytująć zmienną <code>errno</code>.</p>
-<div class="sourceCode" id="cb186"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb186-1" title="1">pid = wait(NULL);</a>
-<a class="sourceLine" id="cb186-2" title="2"><span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb186-3" title="3">    fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
-<a class="sourceLine" id="cb186-4" title="4">    <span class="cf">return</span> -<span class="dv">1</span>;</a>
-<a class="sourceLine" id="cb186-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb212-1" title="1">pid = wait(NULL);</a>
+<a class="sourceLine" id="cb212-2" title="2"><span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb212-3" title="3">    fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
+<a class="sourceLine" id="cb212-4" title="4">    <span class="cf">return</span> -<span class="dv">1</span>;</a>
+<a class="sourceLine" id="cb212-5" title="5">}</a></code></pre></div>
 </section>
 <section id="wait-odczytanie-wartości-zwracanej" class="level2">
 <h2><code>wait()</code> odczytanie wartości zwracanej</h2>
 <p>Można odczytać wartość jaką zwrócił proces potomny przekazując wskaźnik jako pierwszy argument wywołania <code>wait()</code>.</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb187-1" title="1"><span class="dt">int</span> status;</a>
-<a class="sourceLine" id="cb187-2" title="2">pid = wait(&amp;status);</a>
-<a class="sourceLine" id="cb187-3" title="3"><span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb187-4" title="4">    fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
-<a class="sourceLine" id="cb187-5" title="5">    <span class="cf">return</span> -<span class="dv">1</span>;</a>
-<a class="sourceLine" id="cb187-6" title="6">}</a>
-<a class="sourceLine" id="cb187-7" title="7"><span class="cf">if</span> (WIFEXITED(status))</a>
-<a class="sourceLine" id="cb187-8" title="8">    printf(<span class="st">&quot;dziecko zwróciło: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, WEXITSTATUS(status));</a></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb213-1" title="1"><span class="dt">int</span> status;</a>
+<a class="sourceLine" id="cb213-2" title="2">pid = wait(&amp;status);</a>
+<a class="sourceLine" id="cb213-3" title="3"><span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb213-4" title="4">    fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
+<a class="sourceLine" id="cb213-5" title="5">    <span class="cf">return</span> -<span class="dv">1</span>;</a>
+<a class="sourceLine" id="cb213-6" title="6">}</a>
+<a class="sourceLine" id="cb213-7" title="7"><span class="cf">if</span> (WIFEXITED(status))</a>
+<a class="sourceLine" id="cb213-8" title="8">    printf(<span class="st">&quot;dziecko zwróciło: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, WEXITSTATUS(status));</a></code></pre></div>
 </section>
 <section id="oczekiwanie-na-zakończenie-kilku-procesów-potomnych" class="level2">
 <h2>Oczekiwanie na zakończenie kilku procesów potomnych</h2>
 <p>Wywołanie systemowe <code>wait()</code> czeka na pierwszy proces potomny, który ulegnie zakończeniu. Jeżeli utworzonych zostało więcej procesów potomnych, to należy ponowić oczekiwanie.</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb188-1" title="1"><span class="cf">while</span> (true) {</a>
-<a class="sourceLine" id="cb188-2" title="2">    <span class="dt">int</span> pid = wait(NULL);</a>
-<a class="sourceLine" id="cb188-3" title="3">    <span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb188-4" title="4">        <span class="co">/* Nie ma już dzieci */</span></a>
-<a class="sourceLine" id="cb188-5" title="5">        <span class="cf">if</span> (errno == ECHILD)</a>
-<a class="sourceLine" id="cb188-6" title="6">            <span class="cf">break</span>;</a>
-<a class="sourceLine" id="cb188-7" title="7">        <span class="co">/* Wystąpił rzeczywisty błąd */</span></a>
-<a class="sourceLine" id="cb188-8" title="8">        fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
-<a class="sourceLine" id="cb188-9" title="9">        <span class="cf">break</span>;</a>
-<a class="sourceLine" id="cb188-10" title="10">    }</a>
-<a class="sourceLine" id="cb188-11" title="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb214-1" title="1"><span class="cf">while</span> (true) {</a>
+<a class="sourceLine" id="cb214-2" title="2">    <span class="dt">int</span> pid = wait(NULL);</a>
+<a class="sourceLine" id="cb214-3" title="3">    <span class="cf">if</span> (pid &lt; <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb214-4" title="4">        <span class="co">/* Nie ma już dzieci */</span></a>
+<a class="sourceLine" id="cb214-5" title="5">        <span class="cf">if</span> (errno == ECHILD)</a>
+<a class="sourceLine" id="cb214-6" title="6">            <span class="cf">break</span>;</a>
+<a class="sourceLine" id="cb214-7" title="7">        <span class="co">/* Wystąpił rzeczywisty błąd */</span></a>
+<a class="sourceLine" id="cb214-8" title="8">        fprintf(stderr, <span class="st">&quot;error: wait: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, strerror(errno));</a>
+<a class="sourceLine" id="cb214-9" title="9">        <span class="cf">break</span>;</a>
+<a class="sourceLine" id="cb214-10" title="10">    }</a>
+<a class="sourceLine" id="cb214-11" title="11">}</a></code></pre></div>
 </section>
 <section id="wywołanie-waitpid" class="level2">
 <h2>Wywołanie <code>waitpid()</code></h2>
 <p>Wywołanie systemowe <code>waitpid()</code> pozwala zaczekać na konkretny process potomny</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb189-1" title="1"><span class="dt">int</span> status;</a>
-<a class="sourceLine" id="cb189-2" title="2">waitpid(pid, &amp;status, <span class="dv">0</span>);</a>
-<a class="sourceLine" id="cb189-3" title="3"><span class="cf">if</span> (WIFEXITED(status))</a>
-<a class="sourceLine" id="cb189-4" title="4">    printf(<span class="st">&quot;dziecko zwróciło: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, WEXITSTATUS(status));</a></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb215-1" title="1"><span class="dt">int</span> status;</a>
+<a class="sourceLine" id="cb215-2" title="2">waitpid(pid, &amp;status, <span class="dv">0</span>);</a>
+<a class="sourceLine" id="cb215-3" title="3"><span class="cf">if</span> (WIFEXITED(status))</a>
+<a class="sourceLine" id="cb215-4" title="4">    printf(<span class="st">&quot;dziecko zwróciło: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, WEXITSTATUS(status));</a></code></pre></div>
 <p>Tak naprawde <code>wait()</code> działa tak samo jak:</p>
-<div class="sourceCode" id="cb190"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb190-1" title="1"><span class="dt">int</span> pid = waitpid(-<span class="dv">1</span>, &amp;status, <span class="dv">0</span>);</a></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb216-1" title="1"><span class="dt">int</span> pid = waitpid(-<span class="dv">1</span>, &amp;status, <span class="dv">0</span>);</a></code></pre></div>
 <p>Więcej informacji</p>
 <pre class="console"><code>$ man 2 wait</code></pre>
 </section>
@@ -1591,75 +1754,75 @@ systemd─┬─ModemManager───2*[{ModemManager}]
 <section id="tworzenie-procesu-który-będzie-wykonywał-inny-program" class="level2">
 <h2>Tworzenie procesu, który będzie wykonywał inny program</h2>
 <p>Wywołanie <code>fork()</code> powoduje utworzenie nowego procesu, który jest niemalże dokładną kopią procesu potomnego. Żeby zmienić kod wykonywanego programu należy użyc funkcji z rodziny <code>exec()</code></p>
-<div class="sourceCode" id="cb192"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb192-1" title="1"><span class="dt">int</span> execl(<span class="dt">const</span> <span class="dt">char</span> *path,</a>
-<a class="sourceLine" id="cb192-2" title="2">          <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/*, (char *)0, */</span>);</a>
-<a class="sourceLine" id="cb192-3" title="3"><span class="dt">int</span> execle(<span class="dt">const</span> <span class="dt">char</span> *path,</a>
-<a class="sourceLine" id="cb192-4" title="4">           <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/* (char *)0 char *const envp[] */</span>);</a>
-<a class="sourceLine" id="cb192-5" title="5"><span class="dt">int</span> execlp(<span class="dt">const</span> <span class="dt">char</span> *file,</a>
-<a class="sourceLine" id="cb192-6" title="6">           <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/*, (char *)0, */</span>);</a>
-<a class="sourceLine" id="cb192-7" title="7"><span class="dt">int</span> execv(<span class="dt">const</span> <span class="dt">char</span> *path, <span class="dt">char</span> *<span class="dt">const</span> argv[]);</a>
-<a class="sourceLine" id="cb192-8" title="8"><span class="dt">int</span> execvp(<span class="dt">const</span> <span class="dt">char</span> *file, <span class="dt">char</span> *<span class="dt">const</span> argv[]);</a>
-<a class="sourceLine" id="cb192-9" title="9"><span class="dt">int</span> execvP(<span class="dt">const</span> <span class="dt">char</span> *file, <span class="dt">const</span> <span class="dt">char</span> *search_path,</a>
-<a class="sourceLine" id="cb192-10" title="10">          kchar *<span class="dt">const</span> argv[]);</a></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb218-1" title="1"><span class="dt">int</span> execl(<span class="dt">const</span> <span class="dt">char</span> *path,</a>
+<a class="sourceLine" id="cb218-2" title="2">          <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/*, (char *)0, */</span>);</a>
+<a class="sourceLine" id="cb218-3" title="3"><span class="dt">int</span> execle(<span class="dt">const</span> <span class="dt">char</span> *path,</a>
+<a class="sourceLine" id="cb218-4" title="4">           <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/* (char *)0 char *const envp[] */</span>);</a>
+<a class="sourceLine" id="cb218-5" title="5"><span class="dt">int</span> execlp(<span class="dt">const</span> <span class="dt">char</span> *file,</a>
+<a class="sourceLine" id="cb218-6" title="6">           <span class="dt">const</span> <span class="dt">char</span> *arg0, ..., <span class="co">/*, (char *)0, */</span>);</a>
+<a class="sourceLine" id="cb218-7" title="7"><span class="dt">int</span> execv(<span class="dt">const</span> <span class="dt">char</span> *path, <span class="dt">char</span> *<span class="dt">const</span> argv[]);</a>
+<a class="sourceLine" id="cb218-8" title="8"><span class="dt">int</span> execvp(<span class="dt">const</span> <span class="dt">char</span> *file, <span class="dt">char</span> *<span class="dt">const</span> argv[]);</a>
+<a class="sourceLine" id="cb218-9" title="9"><span class="dt">int</span> execvP(<span class="dt">const</span> <span class="dt">char</span> *file, <span class="dt">const</span> <span class="dt">char</span> *search_path,</a>
+<a class="sourceLine" id="cb218-10" title="10">          kchar *<span class="dt">const</span> argv[]);</a></code></pre></div>
 <p>Wywołanie systemowe <code>exec()</code> ładuje nowy program do aktualnego procesu (czyli podmienia sekcje .data, .bss, .text, stos i sterte, biblioteki współdzielone)</p>
 </section>
 <section id="przykład-wykorzystania-exec" class="level2">
 <h2>Przykład wykorzystania <code>exec()</code></h2>
 <p>Przykładowy program, który utworzy proces potomny i załaduje do niego program <code>ls</code>. Proces rodzica będzie czekał na zakończenie procesu potomnego.</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb193-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</a>
-<a class="sourceLine" id="cb193-2" title="2">{</a>
-<a class="sourceLine" id="cb193-3" title="3">    <span class="dt">int</span> ret;</a>
-<a class="sourceLine" id="cb193-4" title="4">    ret = fork();</a>
-<a class="sourceLine" id="cb193-5" title="5">    <span class="cf">if</span> (ret == <span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb193-6" title="6">        <span class="dt">char</span> *argv[] = { <span class="st">&quot;ls&quot;</span>, NULL };</a>
-<a class="sourceLine" id="cb193-7" title="7">        ret = execvp(<span class="st">&quot;ls&quot;</span>, argv);</a>
-<a class="sourceLine" id="cb193-8" title="8">        <span class="cf">if</span> (ret) {</a>
-<a class="sourceLine" id="cb193-9" title="9">            perror(<span class="st">&quot;execvp: &quot;</span>);</a>
-<a class="sourceLine" id="cb193-10" title="10">            <span class="cf">return</span> <span class="dv">1</span>;</a>
-<a class="sourceLine" id="cb193-11" title="11">        }</a>
-<a class="sourceLine" id="cb193-12" title="12">    }</a>
-<a class="sourceLine" id="cb193-13" title="13"></a>
-<a class="sourceLine" id="cb193-14" title="14">    wait(NULL);</a>
-<a class="sourceLine" id="cb193-15" title="15"></a>
-<a class="sourceLine" id="cb193-16" title="16">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb193-17" title="17">}</a></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb219-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</a>
+<a class="sourceLine" id="cb219-2" title="2">{</a>
+<a class="sourceLine" id="cb219-3" title="3">    <span class="dt">int</span> ret;</a>
+<a class="sourceLine" id="cb219-4" title="4">    ret = fork();</a>
+<a class="sourceLine" id="cb219-5" title="5">    <span class="cf">if</span> (ret == <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb219-6" title="6">        <span class="dt">char</span> *argv[] = { <span class="st">&quot;ls&quot;</span>, NULL };</a>
+<a class="sourceLine" id="cb219-7" title="7">        ret = execvp(<span class="st">&quot;ls&quot;</span>, argv);</a>
+<a class="sourceLine" id="cb219-8" title="8">        <span class="cf">if</span> (ret) {</a>
+<a class="sourceLine" id="cb219-9" title="9">            perror(<span class="st">&quot;execvp: &quot;</span>);</a>
+<a class="sourceLine" id="cb219-10" title="10">            <span class="cf">return</span> <span class="dv">1</span>;</a>
+<a class="sourceLine" id="cb219-11" title="11">        }</a>
+<a class="sourceLine" id="cb219-12" title="12">    }</a>
+<a class="sourceLine" id="cb219-13" title="13"></a>
+<a class="sourceLine" id="cb219-14" title="14">    wait(NULL);</a>
+<a class="sourceLine" id="cb219-15" title="15"></a>
+<a class="sourceLine" id="cb219-16" title="16">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb219-17" title="17">}</a></code></pre></div>
 </section>
 <section id="procesy-zombie" class="level2">
 <h2>Procesy zombie</h2>
 <p>Jeżeli proces zakończył swoje wykonywanie, a rodzic nie wykonał <code>wait()</code> to będzie on nadal widoczny na liście procesów, do momentu wykonania <code>wait()</code> przez rodzica.</p>
 <p>Poniższy kod tworzy proces zombie, który będzie istniał około 30 sekund:</p>
-<div class="sourceCode" id="cb194"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb194-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
-<a class="sourceLine" id="cb194-2" title="2"></a>
-<a class="sourceLine" id="cb194-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb194-4" title="4">{</a>
-<a class="sourceLine" id="cb194-5" title="5">    <span class="co">/* Klonujemy proces */</span></a>
-<a class="sourceLine" id="cb194-6" title="6">    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb194-7" title="7">    <span class="co">/* Jeżeli jesteśmy dzieckiem */</span></a>
-<a class="sourceLine" id="cb194-8" title="8">    <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb194-9" title="9">        <span class="cf">return</span> <span class="dv">0</span>; <span class="co">/* Kończymy - proces jest zombie do wykonania wait() */</span></a>
-<a class="sourceLine" id="cb194-10" title="10">    <span class="co">/* Jeżeli jesteśmy rodzicem to czekamy 30 sekund*/</span></a>
-<a class="sourceLine" id="cb194-11" title="11">    sleep(<span class="dv">30</span>);</a>
-<a class="sourceLine" id="cb194-12" title="12">    <span class="co">/* Odczytujemy kod wyjścia procesu i usuwamy go z listy procesów */</span></a>
-<a class="sourceLine" id="cb194-13" title="13">    wait(NULL);</a>
-<a class="sourceLine" id="cb194-14" title="14">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb194-15" title="15">}</a></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb220-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
+<a class="sourceLine" id="cb220-2" title="2"></a>
+<a class="sourceLine" id="cb220-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb220-4" title="4">{</a>
+<a class="sourceLine" id="cb220-5" title="5">    <span class="co">/* Klonujemy proces */</span></a>
+<a class="sourceLine" id="cb220-6" title="6">    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb220-7" title="7">    <span class="co">/* Jeżeli jesteśmy dzieckiem */</span></a>
+<a class="sourceLine" id="cb220-8" title="8">    <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb220-9" title="9">        <span class="cf">return</span> <span class="dv">0</span>; <span class="co">/* Kończymy - proces jest zombie do wykonania wait() */</span></a>
+<a class="sourceLine" id="cb220-10" title="10">    <span class="co">/* Jeżeli jesteśmy rodzicem to czekamy 30 sekund*/</span></a>
+<a class="sourceLine" id="cb220-11" title="11">    sleep(<span class="dv">30</span>);</a>
+<a class="sourceLine" id="cb220-12" title="12">    <span class="co">/* Odczytujemy kod wyjścia procesu i usuwamy go z listy procesów */</span></a>
+<a class="sourceLine" id="cb220-13" title="13">    wait(NULL);</a>
+<a class="sourceLine" id="cb220-14" title="14">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb220-15" title="15">}</a></code></pre></div>
 </section>
 <section id="pytanie" class="level2">
 <h2>Pytanie</h2>
 <p>Jeżeli nie wywołamy <code>wait()</code>, to dlaczego dziecko znika po zakończeniu rodzica?</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb195-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
-<a class="sourceLine" id="cb195-2" title="2"></a>
-<a class="sourceLine" id="cb195-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb195-4" title="4">{</a>
-<a class="sourceLine" id="cb195-5" title="5">    <span class="dt">int</span> pid = fork();</a>
-<a class="sourceLine" id="cb195-6" title="6">    <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb195-7" title="7">        <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb195-8" title="8"></a>
-<a class="sourceLine" id="cb195-9" title="9">    <span class="co">/* Nie wywołujemy tutaj wywołania systemowego wait(), więc nie zakończymy</span></a>
-<a class="sourceLine" id="cb195-10" title="10"><span class="co">       dziecka */</span></a>
-<a class="sourceLine" id="cb195-11" title="11"></a>
-<a class="sourceLine" id="cb195-12" title="12">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb195-13" title="13">}</a></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb221-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
+<a class="sourceLine" id="cb221-2" title="2"></a>
+<a class="sourceLine" id="cb221-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb221-4" title="4">{</a>
+<a class="sourceLine" id="cb221-5" title="5">    <span class="dt">int</span> pid = fork();</a>
+<a class="sourceLine" id="cb221-6" title="6">    <span class="cf">if</span> (pid == <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb221-7" title="7">        <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb221-8" title="8"></a>
+<a class="sourceLine" id="cb221-9" title="9">    <span class="co">/* Nie wywołujemy tutaj wywołania systemowego wait(), więc nie zakończymy</span></a>
+<a class="sourceLine" id="cb221-10" title="10"><span class="co">       dziecka */</span></a>
+<a class="sourceLine" id="cb221-11" title="11"></a>
+<a class="sourceLine" id="cb221-12" title="12">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb221-13" title="13">}</a></code></pre></div>
 </section>
 <section id="odpowiedź" class="level2">
 <h2>Odpowiedź</h2>
@@ -1683,48 +1846,48 @@ systemd─┬─ModemManager─── ...
 <section id="zagadka-0" class="level2">
 <h2>Zagadka 0</h2>
 <p>Ile procesów zostanie utworzonych w poniższym programie?</p>
-<div class="sourceCode" id="cb197"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb197-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
-<a class="sourceLine" id="cb197-2" title="2"></a>
-<a class="sourceLine" id="cb197-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb197-4" title="4">{</a>
-<a class="sourceLine" id="cb197-5" title="5">    fork();</a>
-<a class="sourceLine" id="cb197-6" title="6">    fork();</a>
-<a class="sourceLine" id="cb197-7" title="7">    fork();</a>
-<a class="sourceLine" id="cb197-8" title="8"></a>
-<a class="sourceLine" id="cb197-9" title="9">    fork();</a>
-<a class="sourceLine" id="cb197-10" title="10">    fork();</a>
-<a class="sourceLine" id="cb197-11" title="11">    fork();</a>
-<a class="sourceLine" id="cb197-12" title="12"></a>
-<a class="sourceLine" id="cb197-13" title="13">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb197-14" title="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb223-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
+<a class="sourceLine" id="cb223-2" title="2"></a>
+<a class="sourceLine" id="cb223-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb223-4" title="4">{</a>
+<a class="sourceLine" id="cb223-5" title="5">    fork();</a>
+<a class="sourceLine" id="cb223-6" title="6">    fork();</a>
+<a class="sourceLine" id="cb223-7" title="7">    fork();</a>
+<a class="sourceLine" id="cb223-8" title="8"></a>
+<a class="sourceLine" id="cb223-9" title="9">    fork();</a>
+<a class="sourceLine" id="cb223-10" title="10">    fork();</a>
+<a class="sourceLine" id="cb223-11" title="11">    fork();</a>
+<a class="sourceLine" id="cb223-12" title="12"></a>
+<a class="sourceLine" id="cb223-13" title="13">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb223-14" title="14">}</a></code></pre></div>
 </section>
 <section id="zagadka-1" class="level2">
 <h2>Zagadka 1</h2>
 <p>Ile procesów zostanie utworzonych w poniższym programie?</p>
-<div class="sourceCode" id="cb198"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb198-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
-<a class="sourceLine" id="cb198-2" title="2"></a>
-<a class="sourceLine" id="cb198-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb198-4" title="4">{</a>
-<a class="sourceLine" id="cb198-5" title="5">    <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; ++i)</a>
-<a class="sourceLine" id="cb198-6" title="6">        fork();</a>
-<a class="sourceLine" id="cb198-7" title="7"></a>
-<a class="sourceLine" id="cb198-8" title="8">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb198-9" title="9">}</a></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb224-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
+<a class="sourceLine" id="cb224-2" title="2"></a>
+<a class="sourceLine" id="cb224-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb224-4" title="4">{</a>
+<a class="sourceLine" id="cb224-5" title="5">    <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; ++i)</a>
+<a class="sourceLine" id="cb224-6" title="6">        fork();</a>
+<a class="sourceLine" id="cb224-7" title="7"></a>
+<a class="sourceLine" id="cb224-8" title="8">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb224-9" title="9">}</a></code></pre></div>
 </section>
 <section id="zagadka-2" class="level2">
 <h2>Zagadka 2</h2>
 <p>Ile procesów zostanie utworzonych w poniższym programie?</p>
-<div class="sourceCode" id="cb199"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb199-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
-<a class="sourceLine" id="cb199-2" title="2"></a>
-<a class="sourceLine" id="cb199-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb199-4" title="4">{</a>
-<a class="sourceLine" id="cb199-5" title="5">    <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; ++i) {</a>
-<a class="sourceLine" id="cb199-6" title="6">        fork();</a>
-<a class="sourceLine" id="cb199-7" title="7">        execlp(<span class="st">&quot;ls&quot;</span>, <span class="st">&quot;ls&quot;</span>, NULL);</a>
-<a class="sourceLine" id="cb199-8" title="8">    }</a>
-<a class="sourceLine" id="cb199-9" title="9"></a>
-<a class="sourceLine" id="cb199-10" title="10">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb199-11" title="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb225-1" title="1"><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></a>
+<a class="sourceLine" id="cb225-2" title="2"></a>
+<a class="sourceLine" id="cb225-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb225-4" title="4">{</a>
+<a class="sourceLine" id="cb225-5" title="5">    <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; ++i) {</a>
+<a class="sourceLine" id="cb225-6" title="6">        fork();</a>
+<a class="sourceLine" id="cb225-7" title="7">        execlp(<span class="st">&quot;ls&quot;</span>, <span class="st">&quot;ls&quot;</span>, NULL);</a>
+<a class="sourceLine" id="cb225-8" title="8">    }</a>
+<a class="sourceLine" id="cb225-9" title="9"></a>
+<a class="sourceLine" id="cb225-10" title="10">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb225-11" title="11">}</a></code></pre></div>
 </section>
 </section>
 <section id="planista" class="level1">
@@ -1741,19 +1904,19 @@ systemd─┬─ModemManager─── ...
 <h2>Jak planista reprezentuje procesy</h2>
 <p>W systemie Linux każdy proces, jest reprezentowany przez strukturę <code>struct task_struct</code></p>
 <p>Oto jej ważniejsze pola:</p>
-<div class="sourceCode" id="cb200"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb200-1" title="1"><span class="kw">struct</span> task_struct {</a>
-<a class="sourceLine" id="cb200-2" title="2">    <span class="kw">struct</span> list_head tasks           <span class="co">/* Wpis na liscie procesów */</span></a>
-<a class="sourceLine" id="cb200-3" title="3">    pid_t pid;                       <span class="co">/* Identyfikator procesu */</span></a>
-<a class="sourceLine" id="cb200-4" title="4">    <span class="kw">struct</span> mm_struct *mm             <span class="co">/* Przestrzeń adresowa */</span></a>
-<a class="sourceLine" id="cb200-5" title="5">    <span class="kw">struct</span> task_struct *real_parent; <span class="co">/* Prawdziwy rodzic - ten kto wywołał clone() */</span></a>
-<a class="sourceLine" id="cb200-6" title="6">    <span class="kw">struct</span> task_struct *parent;      <span class="co">/* Odbiorca SIGCHLD i wait4() */</span></a>
-<a class="sourceLine" id="cb200-7" title="7">    <span class="kw">struct</span> list_head children;       <span class="co">/* Dzieci procesu */</span></a>
-<a class="sourceLine" id="cb200-8" title="8">    <span class="kw">struct</span> sigpending pending;       <span class="co">/* Lista oczekujących sygnałów */</span></a>
-<a class="sourceLine" id="cb200-9" title="9">    <span class="kw">struct</span> files_struct *files;      <span class="co">/* Otwarte deskryptory plików */</span></a>
-<a class="sourceLine" id="cb200-10" title="10">    <span class="dt">void</span> *stack                      <span class="co">/* Wskaznik do stosu jądra dla tego</span></a>
-<a class="sourceLine" id="cb200-11" title="11"><span class="co">                                        procesu - tu są zapisane rejestry */</span></a>
-<a class="sourceLine" id="cb200-12" title="12">    ...</a>
-<a class="sourceLine" id="cb200-13" title="13">};</a></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb226-1" title="1"><span class="kw">struct</span> task_struct {</a>
+<a class="sourceLine" id="cb226-2" title="2">    <span class="kw">struct</span> list_head tasks           <span class="co">/* Wpis na liscie procesów */</span></a>
+<a class="sourceLine" id="cb226-3" title="3">    pid_t pid;                       <span class="co">/* Identyfikator procesu */</span></a>
+<a class="sourceLine" id="cb226-4" title="4">    <span class="kw">struct</span> mm_struct *mm             <span class="co">/* Przestrzeń adresowa */</span></a>
+<a class="sourceLine" id="cb226-5" title="5">    <span class="kw">struct</span> task_struct *real_parent; <span class="co">/* Prawdziwy rodzic - ten kto wywołał clone() */</span></a>
+<a class="sourceLine" id="cb226-6" title="6">    <span class="kw">struct</span> task_struct *parent;      <span class="co">/* Odbiorca SIGCHLD i wait4() */</span></a>
+<a class="sourceLine" id="cb226-7" title="7">    <span class="kw">struct</span> list_head children;       <span class="co">/* Dzieci procesu */</span></a>
+<a class="sourceLine" id="cb226-8" title="8">    <span class="kw">struct</span> sigpending pending;       <span class="co">/* Lista oczekujących sygnałów */</span></a>
+<a class="sourceLine" id="cb226-9" title="9">    <span class="kw">struct</span> files_struct *files;      <span class="co">/* Otwarte deskryptory plików */</span></a>
+<a class="sourceLine" id="cb226-10" title="10">    <span class="dt">void</span> *stack                      <span class="co">/* Wskaznik do stosu jądra dla tego</span></a>
+<a class="sourceLine" id="cb226-11" title="11"><span class="co">                                        procesu - tu są zapisane rejestry */</span></a>
+<a class="sourceLine" id="cb226-12" title="12">    ...</a>
+<a class="sourceLine" id="cb226-13" title="13">};</a></code></pre></div>
 </section>
 <section id="lista-procesów" class="level2">
 <h2>Lista procesów</h2>
@@ -1779,17 +1942,17 @@ systemd─┬─ModemManager─── ...
 <li>przerwania pochodzącego od czasomierza systemowego (Programmable System Timer);</li>
 <li>wywołania systemowego (np. <code>open()</code>, <code>fork()</code>, <code>sleep()</code>, <code>write()</code>).</li>
 </ul>
-<div class="sourceCode" id="cb201"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb201-1" title="1"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb201-2" title="2">{</a>
-<a class="sourceLine" id="cb201-3" title="3">    <span class="dt">int</span> x, w;</a>
-<a class="sourceLine" id="cb201-4" title="4">    x = <span class="dv">1</span>;                               &lt;---- tu może wystąpić przerwanie, możliwa zmiana procesu</a>
-<a class="sourceLine" id="cb201-5" title="5">    printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, x);                   &lt;---- wywołanie systemowe write(), możliwa zmiana procesu</a>
-<a class="sourceLine" id="cb201-6" title="6">    <span class="dt">int</span> fd = open(<span class="st">&quot;plik.txt&quot;</span>, O_RDONLY); &lt;---- wywołanie systemowe open(), możliwa zmiana procesu</a>
-<a class="sourceLine" id="cb201-7" title="7">    w = x + <span class="dv">1</span>;                           &lt;---- tu może wystąpić przerwanie, możliwa zmiana procesu</a>
-<a class="sourceLine" id="cb201-8" title="8">    <span class="dt">int</span> *g = malloc(<span class="kw">sizeof</span>(*g));         &lt;---- malloc() nie jest wywołaniem systemowym ale</a>
-<a class="sourceLine" id="cb201-9" title="9">                                               może wywołać brk(), sbrk(), mmap(), które są,</a>
-<a class="sourceLine" id="cb201-10" title="10">                                               czyli możliwa zmiana procesu</a>
-<a class="sourceLine" id="cb201-11" title="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb227-1" title="1"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb227-2" title="2">{</a>
+<a class="sourceLine" id="cb227-3" title="3">    <span class="dt">int</span> x, w;</a>
+<a class="sourceLine" id="cb227-4" title="4">    x = <span class="dv">1</span>;                               &lt;---- tu może wystąpić przerwanie, możliwa zmiana procesu</a>
+<a class="sourceLine" id="cb227-5" title="5">    printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, x);                   &lt;---- wywołanie systemowe write(), możliwa zmiana procesu</a>
+<a class="sourceLine" id="cb227-6" title="6">    <span class="dt">int</span> fd = open(<span class="st">&quot;plik.txt&quot;</span>, O_RDONLY); &lt;---- wywołanie systemowe open(), możliwa zmiana procesu</a>
+<a class="sourceLine" id="cb227-7" title="7">    w = x + <span class="dv">1</span>;                           &lt;---- tu może wystąpić przerwanie, możliwa zmiana procesu</a>
+<a class="sourceLine" id="cb227-8" title="8">    <span class="dt">int</span> *g = malloc(<span class="kw">sizeof</span>(*g));         &lt;---- malloc() nie jest wywołaniem systemowym ale</a>
+<a class="sourceLine" id="cb227-9" title="9">                                               może wywołać brk(), sbrk(), mmap(), które są,</a>
+<a class="sourceLine" id="cb227-10" title="10">                                               czyli możliwa zmiana procesu</a>
+<a class="sourceLine" id="cb227-11" title="11">}</a></code></pre></div>
 </section>
 </section>
 <section id="wywołania-systemowe" class="level1">
@@ -1797,15 +1960,15 @@ systemd─┬─ModemManager─── ...
 <section id="co-jest-efektem-kompilacji" class="level2">
 <h2>Co jest efektem kompilacji?</h2>
 <p>Kod w języku C jest kompilowany do instrukcji maszynowych</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb202-1" title="1"><span class="dt">int</span> foo(<span class="dt">int</span> a, <span class="dt">int</span> b)  _foo: </a>
-<a class="sourceLine" id="cb202-2" title="2">{                      pushq %rbp            <span class="co">// Zapisz podstawe stosu</span></a>
-<a class="sourceLine" id="cb202-3" title="3">    <span class="dt">int</span> c = a + b;     movq  %rsp, %rbp      <span class="co">// Weź szczyt stosu jako podstawę</span></a>
-<a class="sourceLine" id="cb202-4" title="4">    <span class="cf">return</span> c;          movl  %edi, %eax      <span class="co">// Wrzuć pierwszy argument do %eax</span></a>
-<a class="sourceLine" id="cb202-5" title="5">}                      addl  %esi, %eax      <span class="co">// Dodaj drugi argument do %eax</span></a>
-<a class="sourceLine" id="cb202-6" title="6">                       movl  %eax, -<span class="dv">4</span>(%rbp)  <span class="co">// Wynik wrzuć na stos</span></a>
-<a class="sourceLine" id="cb202-7" title="7">                       movl  -<span class="dv">4</span>(%rbp), %eax  <span class="co">// Przekaż wartość zwracaną przez %eax</span></a>
-<a class="sourceLine" id="cb202-8" title="8">                       popq  %rbp            <span class="co">// Załaduj zapisaną podstawę stosu podstawę stosu</span></a>
-<a class="sourceLine" id="cb202-9" title="9">                       retq                  <span class="co">// Wróć z powrotem w miejsce wywołania  </span></a></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb228-1" title="1"><span class="dt">int</span> foo(<span class="dt">int</span> a, <span class="dt">int</span> b)  _foo: </a>
+<a class="sourceLine" id="cb228-2" title="2">{                      pushq %rbp            <span class="co">// Zapisz podstawe stosu</span></a>
+<a class="sourceLine" id="cb228-3" title="3">    <span class="dt">int</span> c = a + b;     movq  %rsp, %rbp      <span class="co">// Weź szczyt stosu jako podstawę</span></a>
+<a class="sourceLine" id="cb228-4" title="4">    <span class="cf">return</span> c;          movl  %edi, %eax      <span class="co">// Wrzuć pierwszy argument do %eax</span></a>
+<a class="sourceLine" id="cb228-5" title="5">}                      addl  %esi, %eax      <span class="co">// Dodaj drugi argument do %eax</span></a>
+<a class="sourceLine" id="cb228-6" title="6">                       movl  %eax, -<span class="dv">4</span>(%rbp)  <span class="co">// Wynik wrzuć na stos</span></a>
+<a class="sourceLine" id="cb228-7" title="7">                       movl  -<span class="dv">4</span>(%rbp), %eax  <span class="co">// Przekaż wartość zwracaną przez %eax</span></a>
+<a class="sourceLine" id="cb228-8" title="8">                       popq  %rbp            <span class="co">// Załaduj zapisaną podstawę stosu podstawę stosu</span></a>
+<a class="sourceLine" id="cb228-9" title="9">                       retq                  <span class="co">// Wróć z powrotem w miejsce wywołania  </span></a></code></pre></div>
 </section>
 <section id="instrukcje-uprzywilejowane" class="level2">
 <h2>Instrukcje uprzywilejowane</h2>
@@ -1825,15 +1988,15 @@ systemd─┬─ModemManager─── ...
 <li>System operacyjny zaczyna wykonywać procedurę obsługi tego przerwania: zapisuje stan procesora, przełącza stos programu na stos jądra (zmienia rejestr <code>%esp</code> - wskaźnik stosu), i wykonuje odpowiednią operację wskazaną numerem wywołania systemowego.</li>
 <li>Po wykonaniu wywołania systemowego system operacyjny przywraca stan procesora (w tym stos procesu) i wznawiane jest wykonywanie programu.</li>
 </ol>
-<div class="sourceCode" id="cb203"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb203-1" title="1"><span class="fu">message:</span></a>
-<a class="sourceLine" id="cb203-2" title="2">    .asciz <span class="st">&quot;Hello world\n&quot;</span></a>
-<a class="sourceLine" id="cb203-3" title="3">.set message_size, . - message</a>
-<a class="sourceLine" id="cb203-4" title="4">...</a>
-<a class="sourceLine" id="cb203-5" title="5">movl<span class="bn"> $1, </span>%<span class="kw">edi</span></a>
-<a class="sourceLine" id="cb203-6" title="6">leaq message(%rip), %<span class="kw">rsi</span></a>
-<a class="sourceLine" id="cb203-7" title="7"><span class="bu">movq</span> <span class="dv">$</span>message_size, %<span class="kw">rdx</span></a>
-<a class="sourceLine" id="cb203-8" title="8"><span class="bu">movq</span><span class="bn"> $1, </span>%<span class="kw">rax</span>             <span class="co">;1 is sys_write syscall number</span></a>
-<a class="sourceLine" id="cb203-9" title="9"><span class="bu">syscall</span></a></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode asm"><code class="sourceCode fasm"><a class="sourceLine" id="cb229-1" title="1"><span class="fu">message:</span></a>
+<a class="sourceLine" id="cb229-2" title="2">    .asciz <span class="st">&quot;Hello world\n&quot;</span></a>
+<a class="sourceLine" id="cb229-3" title="3">.set message_size, . - message</a>
+<a class="sourceLine" id="cb229-4" title="4">...</a>
+<a class="sourceLine" id="cb229-5" title="5">movl<span class="bn"> $1, </span>%<span class="kw">edi</span></a>
+<a class="sourceLine" id="cb229-6" title="6">leaq message(%rip), %<span class="kw">rsi</span></a>
+<a class="sourceLine" id="cb229-7" title="7"><span class="bu">movq</span> <span class="dv">$</span>message_size, %<span class="kw">rdx</span></a>
+<a class="sourceLine" id="cb229-8" title="8"><span class="bu">movq</span><span class="bn"> $1, </span>%<span class="kw">rax</span>             <span class="co">;1 is sys_write syscall number</span></a>
+<a class="sourceLine" id="cb229-9" title="9"><span class="bu">syscall</span></a></code></pre></div>
 </section>
 <section id="wywołania-systemowe-a-funkcje" class="level2">
 <h2>Wywołania systemowe a funkcje</h2>
@@ -1892,17 +2055,17 @@ systemd─┬─ModemManager─── ...
 <section id="zmienne-reprezentują-komórki-pamięci" class="level2">
 <h2>Zmienne reprezentują komórki pamięci</h2>
 <p>Każda zmienna reprezentuje pewną komórkę pamięci.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb204-1" title="1"><span class="dt">int</span> y = <span class="dv">2</span>; <span class="co">/* Zmienna w sekcji .data */</span></a>
-<a class="sourceLine" id="cb204-2" title="2"></a>
-<a class="sourceLine" id="cb204-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
-<a class="sourceLine" id="cb204-4" title="4">{</a>
-<a class="sourceLine" id="cb204-5" title="5">    <span class="dt">int</span> x; <span class="co">/* Zmienna na stosie */</span></a>
-<a class="sourceLine" id="cb204-6" title="6"></a>
-<a class="sourceLine" id="cb204-7" title="7">    printf(<span class="st">&quot;%p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;x);</a>
-<a class="sourceLine" id="cb204-8" title="8">    printf(<span class="st">&quot;%p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;y);</a>
-<a class="sourceLine" id="cb204-9" title="9"></a>
-<a class="sourceLine" id="cb204-10" title="10">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb204-11" title="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb230-1" title="1"><span class="dt">int</span> y = <span class="dv">2</span>; <span class="co">/* Zmienna w sekcji .data */</span></a>
+<a class="sourceLine" id="cb230-2" title="2"></a>
+<a class="sourceLine" id="cb230-3" title="3"><span class="dt">int</span> main(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb230-4" title="4">{</a>
+<a class="sourceLine" id="cb230-5" title="5">    <span class="dt">int</span> x; <span class="co">/* Zmienna na stosie */</span></a>
+<a class="sourceLine" id="cb230-6" title="6"></a>
+<a class="sourceLine" id="cb230-7" title="7">    printf(<span class="st">&quot;%p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;x);</a>
+<a class="sourceLine" id="cb230-8" title="8">    printf(<span class="st">&quot;%p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;y);</a>
+<a class="sourceLine" id="cb230-9" title="9"></a>
+<a class="sourceLine" id="cb230-10" title="10">    <span class="cf">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb230-11" title="11">}</a></code></pre></div>
 </section>
 <section id="pamięć-wirtualna" class="level2">
 <h2>Pamięć wirtualna</h2>
@@ -1912,22 +2075,22 @@ systemd─┬─ModemManager─── ...
 <section id="sekcje-pamięci" class="level2">
 <h2>Sekcje pamięci</h2>
 <p>W systemie Linux skompilowany program będzie miał odpowiednią strukturę w pamięci:</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb205-1" title="1"><span class="dt">int</span> x;  <span class="co">/* Niezainicjalizowane dane (.bss) */</span></a>
-<a class="sourceLine" id="cb205-2" title="2"><span class="dt">int</span> y = <span class="dv">3</span>; <span class="co">/* Zainicjalizowane dane (.data) */</span></a>
-<a class="sourceLine" id="cb205-3" title="3"><span class="dt">void</span> foo(<span class="dt">int</span> x) <span class="co">/* Argumenty w rejestrach lub na stosie */</span>     ---.</a>
-<a class="sourceLine" id="cb205-4" title="4">{                                                                 |</a>
-<a class="sourceLine" id="cb205-5" title="5">    <span class="dt">static</span> <span class="dt">int</span> x; <span class="co">/* Niezainicjalizowane dane (.bss) */</span>           |</a>
-<a class="sourceLine" id="cb205-6" title="6">    <span class="dt">static</span> <span class="dt">int</span> y = <span class="dv">4</span>; <span class="co">/* Zainicjalizowane dane (.data) */</span>         |</a>
-<a class="sourceLine" id="cb205-7" title="7">}                                                                 |</a>
-<a class="sourceLine" id="cb205-8" title="8"><span class="dt">int</span> main(<span class="dt">void</span>)                                                    |    kod</a>
-<a class="sourceLine" id="cb205-9" title="9">{                                                                 |___ programu</a>
-<a class="sourceLine" id="cb205-10" title="10">    <span class="dt">int</span> x; <span class="co">/* Alokacja na stosie */</span>                               |    umieszczany</a>
-<a class="sourceLine" id="cb205-11" title="11">    <span class="dt">int</span> *y = malloc(<span class="dv">1024</span>); <span class="co">/* Wskaźnik na stosie, */</span>              |    w sekcji .text</a>
-<a class="sourceLine" id="cb205-12" title="12">                           <span class="co">/* a blok pamięci na stercie */</span>        |</a>
-<a class="sourceLine" id="cb205-13" title="13">    foo(<span class="dv">1</span>); <span class="co">/* Adres powrotu na stosie,                           |</span></a>
-<a class="sourceLine" id="cb205-14" title="14"><span class="co">               argumenty w rejestrach lub na stosie  */</span>           |</a>
-<a class="sourceLine" id="cb205-15" title="15">    <span class="cf">return</span> <span class="dv">0</span>;                                                     |</a>
-<a class="sourceLine" id="cb205-16" title="16">}                                                              ---&#39;</a></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb231-1" title="1"><span class="dt">int</span> x;  <span class="co">/* Niezainicjalizowane dane (.bss) */</span></a>
+<a class="sourceLine" id="cb231-2" title="2"><span class="dt">int</span> y = <span class="dv">3</span>; <span class="co">/* Zainicjalizowane dane (.data) */</span></a>
+<a class="sourceLine" id="cb231-3" title="3"><span class="dt">void</span> foo(<span class="dt">int</span> x) <span class="co">/* Argumenty w rejestrach lub na stosie */</span>     ---.</a>
+<a class="sourceLine" id="cb231-4" title="4">{                                                                 |</a>
+<a class="sourceLine" id="cb231-5" title="5">    <span class="dt">static</span> <span class="dt">int</span> x; <span class="co">/* Niezainicjalizowane dane (.bss) */</span>           |</a>
+<a class="sourceLine" id="cb231-6" title="6">    <span class="dt">static</span> <span class="dt">int</span> y = <span class="dv">4</span>; <span class="co">/* Zainicjalizowane dane (.data) */</span>         |</a>
+<a class="sourceLine" id="cb231-7" title="7">}                                                                 |</a>
+<a class="sourceLine" id="cb231-8" title="8"><span class="dt">int</span> main(<span class="dt">void</span>)                                                    |    kod</a>
+<a class="sourceLine" id="cb231-9" title="9">{                                                                 |___ programu</a>
+<a class="sourceLine" id="cb231-10" title="10">    <span class="dt">int</span> x; <span class="co">/* Alokacja na stosie */</span>                               |    umieszczany</a>
+<a class="sourceLine" id="cb231-11" title="11">    <span class="dt">int</span> *y = malloc(<span class="dv">1024</span>); <span class="co">/* Wskaźnik na stosie, */</span>              |    w sekcji .text</a>
+<a class="sourceLine" id="cb231-12" title="12">                           <span class="co">/* a blok pamięci na stercie */</span>        |</a>
+<a class="sourceLine" id="cb231-13" title="13">    foo(<span class="dv">1</span>); <span class="co">/* Adres powrotu na stosie,                           |</span></a>
+<a class="sourceLine" id="cb231-14" title="14"><span class="co">               argumenty w rejestrach lub na stosie  */</span>           |</a>
+<a class="sourceLine" id="cb231-15" title="15">    <span class="cf">return</span> <span class="dv">0</span>;                                                     |</a>
+<a class="sourceLine" id="cb231-16" title="16">}                                                              ---&#39;</a></code></pre></div>
 </section>
 <section id="sekcje-pamięci-procesu" class="level2">
 <h2>Sekcje pamięci procesu</h2>
