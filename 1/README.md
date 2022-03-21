@@ -907,6 +907,302 @@ $ (ls)
 
 ![](assets/subshellsimple.svg)
 
+## Different cases for optimization
+
+Bash omits additional `fork()`, depending on the use case.
+
+```bash
+$ (pstree)
+systemd─┬─...
+        ├─sshd───sshd───sshd───bash───pstree
+$ (:;pstree)
+systemd─┬─...
+        ├─sshd───sshd───sshd───bash───bash───pstree
+$ bash -c 'pstree'
+systemd─┬─...
+        ├─sshd───sshd───sshd───bash───pstree
+$ echo pstree | bash
+systemd─┬─...
+        ├─sshd───sshd───sshd───bash───bash───pstree
+```
+
+## Operator `<()`
+
+The `<()` operator works by running a command specified in brackets and
+inserts a temporary named pipe in their place.
+
+You can see the result is a named pipe:
+```
+$ ls -l <(echo)
+```
+
+For example to find `bash` in `ps` output:
+```bash
+$ grep bash <(ps)
+```
+Or if you want to execute a script located at `url`
+```bash
+$ bash <(curl -s https://raw.githubusercontent.com/czarnota/bash-snake/master/snake)
+```
+
+## Operator `$()`
+
+Captures the standard output of the command in brackets and "expands" it
+into the shell
+
+Install linux headers for current linux version:
+```bash
+$ sudo apt install linux-headers-$(uname -r)
+```
+
+Kill `vim`, by looking up its `PID` using `pidof`:
+```bash
+$ kill $(pidof vim)
+```
+
+Save list of files in `files` variable
+```bash
+files="$(ls -a)"
+```
+
+## Question: Why doesn't it work?
+
+The `read` command reads standard input and places it in `var` variable.
+So `var` should contain `hello`, but it doesn't?
+
+```bash
+$ echo hello | read var
+$ echo "hello:$var"
+hello:
+```
+
+## Answer: Why doesn't it work?
+
+The `echo hello | read var` is executed in a subshell.
+Execute the following commands to confirm:
+
+```bash
+$ strace -f -e fork,execve,clone bash
+$ echo hello > var_value
+$ read var < var_value
+$ echo "hello:$var"
+hello:hello
+$ cat var_value | read var2         # read is done in a subshell
+$ echo $var2
+
+```
+
+So there is a difference between these 2 commands:
+
+```bash
+read x < <(echo y)
+```
+```bash
+echo y | read x
+```
+
+## Task: Search and replace
+
+1. Imagine that you have just become the maintainer of the
+   famous Symfony project.
+```
+http://github.com/symfony/symfony
+```
+
+2. Currently every `.php` file has the following copyright
+```
+  (c) Fabien Potencier <fabien@symfony.com>
+```
+
+3. Update the copyright by adding new line below
+
+```
+  (c) Fabien Potencier <fabien@symfony.com>
+  (c) Your Name <yourname@example.com>
+```
+
+You may need to use `sed -i` and `grep -R -l`.
+
+# Glob patterns
+
+## Operator `*`
+
+The `*` operator matches any charaters.
+
+The shell will replace the pattern with all files that match it.
+
+Examples:
+```bash
+$ mv *.txt dest
+```
+```bash
+$ echo *
+```
+```bash
+$ tar -czffiles.tar.gz *
+```
+```bash
+$ rm -fr *.o
+```
+
+## Operator `?`
+
+The `?` operator matches a single character.
+
+The shell will replace the pattern with all files that match it.
+
+Examples:
+```bash
+$ mv *.??? dest
+```
+```bash
+$ rm *.?o
+```
+```bash
+$ tar -czffiles.tar.gz ??????
+```
+
+## Operator `[]`
+
+The `[]` operator matches a single matching character from the set.
+
+The shell will replace the pattern with all files that match it.
+
+```bash
+$ echo a[bczd]
+```
+```bash
+$ cp *.[mp3tx][mp3tx][mp3tx]
+```
+```bash
+$ rm [a-z]
+```
+
+## Operator `{..}`
+
+The `{}` operator expands to numbers or characters of the specified range.
+
+```bash
+$ echo {1..10}
+```
+```bash
+$ rm {1..10}{1..10}
+```
+```bash
+$ touch {0..9}{a..z}
+```
+
+## Operator `{,}`
+
+You can manually specify elements of the range, by specifying elements
+and separating them by a comma:
+
+```bash
+$ mv path/to/{file1,file2}
+```
+```bash
+$ mv path/to/file1.txt{,.bak}
+```
+```bash
+$ touch path/to/{przemek,mike,tom}{1..10}
+```
+
+## Operator `~`
+
+The `~` expands to user's home firectory:
+
+```bash
+$ echo ~/directory
+/home/john/directory
+```
+
+This works the same as `$HOME` variable:
+```bash
+$ echo $HOME/directory
+/home/john/directory
+```
+
+You can disable the expansion using `""`:
+```bash
+$ echo "~/directory"
+~/directory
+```
+
+## Task: Downloading articles
+
+You can download an article about a day from Wikipedia in `.pdf` format
+from this link:
+
+```
+https://en.Wikipedia.org/api/rest_v1/page/pdf/April_26
+```
+
+1. Download all articles about days from the month of your birth.
+2. Downloaded files should have a `.pdf` suffix.
+3. Pack downloaded files into a `.zip` archive.
+
+# Error codes
+
+## Operator `||`
+
+Executes a command only if the first command fails.
+
+Print `not found`, if there is no line in `file` containing `hello`:
+```bash
+$ grep hello file || echo not found
+```
+
+Download `file1`, if it fails download `file2`
+```bash
+$ wget http://a.com/file1 || wget http://b.com/file2
+```
+
+## Operator `&&`
+
+Executes a command only if the first command succeeds
+
+Print `found`, if there is a line in `file` containing `hello`:
+```bash
+$ grep hello file && echo found
+```
+
+Remove `file` and if it was removed successfully, then create it again:
+```
+$ rm file && touch file
+```
+
+Extract `f.tar.gz` archive only if it was downloaaded successfully
+```bash
+$ wget http://x.com/f.tar.gz && tar -czvf f.tar.gz
+```
+
+## Question: What is going to happen?
+
+What will be printed in the following scenario:
+```bash
+$ echo 1 || echo 2 && echo 3
+```
+
+## Answer: What is going to happen?
+
+The result is:
+```bash
+$ echo 1 || echo 2 && echo 3
+1
+3
+```
+Although the boolean logic would suggest the following order:
+```bash
+$ echo 1 || ( echo 2 && echo 3 )
+```
+
+The actual order is always left to right:
+```bash
+$ ( ( echo 1 ||  echo 2 ) && echo 3 )
+```
+
+## Writing scripts in Bash programming language
+
 ## Wielozadaniowość na wielu procesorach/rdzeniach
 
 W przypadku wielu procesorów, system operacyjny może uruchamiać procesy
