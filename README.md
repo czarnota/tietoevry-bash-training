@@ -25,14 +25,14 @@ It is an example of a graphical system shell.
 ## Examples of system shells - Xbox Series X dashboard
 
 The purpose of Xbox dashboard is to run processes (games), therefore it
-can also be considered as an example of graphical system shell.
+can also be considered as an example of a graphical system shell.
 
 ![](assets/xoneshell.jpg)
 
 ## Examples of system shells - Bash
 
 Bash is an example of a command-line shell. Other example of command line shells
-include i. a.: `zsh`, `tcsh`, `busybox ash` and `fish` shell
+include i. a. `zsh`, `tcsh`, `busybox ash` and `fish` shell.
 
 ![](assets/bashshell.png)
 
@@ -69,7 +69,7 @@ $ ls -l -a /home
 ```
 
 ## Example programs - filesystem operations
-Examples of programs that manage files and directories
+Examples of programs that manage files and directories:
 ```bash
 $ cat p0             # print p0 to standard output
 $ cat p0 p1 p2       # print p0, p1 and p2 to standard output
@@ -92,16 +92,16 @@ $ ln -s a b          # create soft link named 'b' to 'a'
 ```
 
 ## Example programs - access control
-Examples of programs that manage file and directory permissions
+Examples of programs that manage file and directory permissions:
 ```bash
-$ chmod 777 f        # change 'f' permissions to 777
-$ chmod u+x,g+x,o+x  # add execute permission to user, group and others
-$ chown user a       # change owner of 'a' to 'user'
-$ chown group:user a # change group to 'gruop' and owner of 'a' to 'user'
+$ chmod 777 f         # change 'f' permissions to 777
+$ chmod u+x,g+x,o+x   # add execute permission to user, group and others
+$ chown user a        # change owner of 'a' to 'user'
+$ chown group:user a  # change group to 'gruop' and owner of 'a' to 'user'
 ```
 
 ## Example programs - archive management
-Examples of programs that manage archives
+Examples of programs that manage archives:
 ```bash
 $ tar -tf archive.tar.gz             # print (t) files in archive (f)
 $ tar -xzvf archive.tar.gz           # extract (x) .gz (z) archive, verbosely (v)
@@ -116,13 +116,13 @@ $ unzip -l x.zip                     # print files in 'x.zip' archive
 
 ## Question: What is the difference between a symbolic link and a hard link?
 
-We can create symbolic links using `ln` program:
+We can create symbolic links using `ln` program.
 
 ```console
 $ ln target destination
 ```
 
-We can create hard links using `ln` program:
+We can create hard links using `ln` program and `-s` option.
 ```console
 $ ln -s target destination
 ```
@@ -142,15 +142,15 @@ $ ln -s bar baz
 
 ## Task: The Land of TietoEvry
 
-Download the following archive using `wget` program:
+Download the following archive using `wget` program.
 
 ```
 $ wget czarnota.github.io/data/task-land.tar.gz
 ```
 
-1. Extract the archive
+1. Extract the archive.
 2. Complete all listed missions
-3. Create a `.tar.gz` archive from the directory
+3. Create a `.tar.gz` archive from the directory.
 
 # Options and arguments
 
@@ -160,30 +160,30 @@ All characters (with the exception of a few built-in bash constructs/operators)
 following the program's name are interpreted by the program and can influence
 its behavior.
 
-```console
+```bash
 $ PROGRAM_NAME ARGUMENTS...
 ```
-```console
+```bash
 $ chmod o+w,g+w file
 ```
-```console
+```bash
 $ find . \( -name words -or -name x \) -and -not -executable
 ```
-```console
+```bash
 $ tcpdump -i eth0 ip or arp
 ```
 
 ## POSIX Syntax
 
 Programs can parse options and arguments as they like, but there exists
-a common convention that most unix programs follow. This convention is
+a common convention that most Unix programs follow. This convention is
 standarised by POSIX.
 
-In below example `-a` is an option, `-b barg` is an option with an argument `barg`
+In the below example, `-a` is an option, `-b barg` is an option with an argument `barg`
 and `arg0` and `arg1` are just arguments.
 
 ```bash
-$ prog -a -b barg arg0 arg1 # The 'barg' is an argument to -b option
+$ prog -a -b barg arg0 arg1 # The 'barg' is an argument to the -b option
 $ prog -ab barg arg0 arg1   # You can "glue" options together
 $ prog -a -- -b barg arg1   # You can terminate options using --, here -b is an argument
 ```
@@ -197,14 +197,14 @@ $ tar -xzvfarch.tar.gz
 
 ## Extended GNU Syntax
 
-GNU introduced long options (supported using `getopt_long()` and `getopt_long_only()` C library functions)
+GNU introduced long options (supported using `getopt_long()` and `getopt_long_only()` C library functions).
 
 ```bash
 $ prog -ab --option --key=value arg0 arg1 arg2   # getopt_long()
 $ prog -option -key arg0 arg1 arg2               # getopt_long_only()
 ```
 
-Examples of long options
+Examples of long options:
 
 ```bash
 $ ps --user             # getopt_long()
@@ -214,14 +214,14 @@ $ find . -name x        # getopt_long_only()
 
 ## Legacy BSD Syntax
 
-Something that `ps` manual page calls a `BSD Syntax`. It is supported only by
-a few programs
+Convention that `ps` manual page calls a `BSD Syntax`. It is supported only by
+a few programs.
 ```bash
 $ prog ab arg0 arg1 arg2     # options are: 'a' and 'b', the rest are arguments
 $ prog abcdef arg0 arg1 arg2 # options are: 'a', 'b', 'c', the rest are arguments
 ```
 
-Examples
+Examples:
 
 ```bash
 $ ps aux
@@ -233,13 +233,13 @@ $ tar czf files.tar.gz file1 file2
 
 It is important to note that the options and arguments are
 interpreted by the executed program and not by the shell.
-For example, if we execute `ls`
+For example, if we execute `ls`:
 
 ```
 $ ls -l -a /home
 ```
 
-Then the `ls` program would receive the following arguments in its `main()` function.
+Then the `ls` program would receive the following arguments in its `main()` function:
 ```c
 int main(int argc, char **argv)
 {
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
 }
 ```
 
-**Bash only splits the input line into tokens**
+**Bash only splits the input line into tokens.**
 
 ## Question: Which is correct?
 
@@ -257,13 +257,13 @@ Which commands would you use to create directory called `-f`, list its contents
 and then remove it afterwards?
 
 These commands:
-```console
+```bash
 $ mkdir -f
 $ ls -f
 $ rm -fr -f
 ```
 Or these:
-```console
+```bash
 $ mkdir "-f"
 $ ls "-f"
 $ rm -fr "-f"
@@ -275,7 +275,7 @@ Neither. The quotes `""` make no difference to the executed program. It will
 still see `-f` in its argument list. We need to use `--` to terminate the
 list of options.
 
-```console
+```bash
 $ mkdir -- "-f"
 $ ls -- "-f"
 $ rm -fr -- "-f"
@@ -283,7 +283,7 @@ $ rm -fr -- "-f"
 
 ## Example programs - find
 
-The `find` program searches for files or directories. For
+The `find` program searches for files and directories. For
 example to find all files named `lib_functions.c` starting our search
 from the current working directory `.`, we can do:
 
@@ -291,14 +291,14 @@ from the current working directory `.`, we can do:
 $ find . -name "lib_functions.c"
 ```
 We can search in a case insensitive mode, also using wildcard patterns. The below example
-will print all files that start with string `host` (case insensitive). Also it will
-not print any directories `-type f`
+will print all files that start with string `host` (case insensitive). Also, it will
+not print any directories (`-type f`).
 ```bash
 $ find / -iname "host*" -type f
 ```
 We can execute a program on each file with `.tmp` extension. The below command
 will remove all `.tmp` files, but will prompt for confirmation before removal
-(`rm -i`).
+(`rm -i`):
 
 ```bash
 $ find . -name "*.tmp" -exec rm -i {} \;
@@ -306,7 +306,7 @@ $ find . -name "*.tmp" -exec rm -i {} \;
 
 ## Task: SVG to PNG converter
 
-Download and extract, using the terminal.
+Download and extract, using the terminal:
 
 ```
 https://github.com/simple-icons/archive/develop.zip
@@ -326,7 +326,7 @@ Hints:
 
 ## The difference between a program and a process
 
-A process is a program that is being executed
+A process is a program that is being executed.
 
 Program is a list of instructions to be executed (just like a cooking recipe) and
 a process is an act of executing these instructions (just like cooking).
@@ -337,23 +337,23 @@ a process is an act of executing these instructions (just like cooking).
 A process is a program that is being executed. It consists of:
 
 - **Processor state (registers)** For `x86_64` these are i. a:
-    - `rbp` - base of the stack (frame pointer)
-    - `rsp` - stack pointer
-    - `rip` - program counter
-    - `rflags` - flags register
-    - general purpose registers: `rax`, `rcx`, `rdx`, `rbx`, `rsi`, `rdi`, `r8`-`r15`
-- **Virtual memory** (Page table) (pointer by `CR3` register)
+    - `rbp` - base of the stack (frame pointer);
+    - `rsp` - stack pointer;
+    - `rip` - program counter;
+    - `rflags` - flags register;
+    - general purpose registers: `rax`, `rcx`, `rdx`, `rbx`, `rsi`, `rdi`, `r8`-`r15`.
+- **Virtual memory** (Page table) (pointer by `CR3` register).
 - **Open file descriptors**, for example:
-    - regular files (opened by `open()`)
-    - network sockets (opened by `socket()`, `accept()`)
-    - pipes (opened by `pipe()`)
-- Other data structure important for Linux kernel
+    - regular files (opened by `open()`);
+    - network sockets (opened by `socket()`, `accept()`);
+    - pipes (opened by `pipe()`).
+- Other data structure important for Linux kernel.
 
 ## How Linux represents processes?
 
-In Linux kernel every process is represented by a `struct task_struct`
+In Linux kernel every process is represented by a `struct task_struct`.
 
-Below are some fields in this structure:
+Below are some fields located in this structure:
 
 ```c
 struct task_struct {
@@ -380,7 +380,7 @@ Linux internally keeps a circular list of all processes running in the system.
 
 ## How can we check which processes are running at the moment
 
-The `ps` program can show us all processes, the `top` program display
+The `ps` program can show us all processes, the `top` program displays
 processes interactively, the `pstree` prints a tree of processes and
 the pseudo file system `/proc` contains entries representing every process.
 ```bash
@@ -421,7 +421,7 @@ out:
 ## Running processes in background
 
 In `ls &` command, the `&` will run the process in the background.
-It omits the call to `waitpid()`.
+It omits the call to `waitpid()`:
 
 ```c
 while (true) {
@@ -453,7 +453,7 @@ What are we missing?
 
 When a child process finishes, the parent is notified with `SIGCHLD`. Bash
 calls `wait` system call in `SIGCHLD` handler, which allows to read process exit
-code and remove it from list of processes.
+code and remove it from the list of processes.
 
 ```c
 /* sigchld_handler () flushes at least one of the children that we are
@@ -473,11 +473,11 @@ static sighandler sigchld_handler(int sig) {
 
 ## Question: Will zombie process be created?
 
-The `exec` command calls one of `exec*()` system calls, which causes current
-process to execute different program, by replacing the code section of the current
-process and reinitializing process memory.
+The `exec` command calls one of `exec*()` system calls, which causes the current
+process to execute a different program, by replacing the code section of the current
+process and reinitializing the process memory.
 
-The `/usr/bin/sleep` simply wait the specified number of seconds
+The `/usr/bin/sleep` simply waits the specified number of seconds.
 
 The questions are:
 
@@ -501,30 +501,30 @@ Answers:
 
 - **Will zombie process be created in the below case?**
     - Yes.
-- **Why it will be created**
+- **Why will it be created?**
     - Because `sleep` does not implement `SIGCHLD` signal handler.
-- **How long will it exist in a zombie state**
-    - The child executes for `5` seconds, the parent `3600` seconds. The child
-      will be in zombie state `3595` seconds.
+- **How long will it exist in a zombie state?**
+    - The child executes for `5` seconds, the parent for `3600` seconds. The child
+      will be in zombie state for `3595` seconds.
 
 ## Detaching processes from the shell
 
 Runs `COMMAND`, redirects `stdout` and `stderr` to files in order to avoid termination from
-closed terminal and removes the `PID` from bash job list, which will prevent
-bash from propagating `SIGHUP`.
+a closed terminal and removes the process identified by `PID` from the Bash job list, which will prevent
+Bash from propagating `SIGHUP`:
 ```
 $ COMMAND >file 2>file &
 $ disown PID
 ```
 
 Runs `COMMAND`, but prevents it from receiving `SIGHUP`, also redirects
-the `stdin` and `stdout`.
+the `stdin` and `stdout`:
 ```
 $ nohup COMMAND &
 ```
 
 Runs process with the help of `screen` program, which thanks to `-d` option
-will disconnect itself from the `bash` process.
+will disconnect itself from the Bash process:
 ```
 $ screen -d -m COMMAND
 ```
@@ -548,7 +548,7 @@ $ watch -n0 df
 ## Task: Detaching from the terminal
 
 1. Run `tar` program so that it would compress
-   the selected directory located in home directory
+   the selected directory located in the home directory
    into `~/archive.tar.gz` every minute. The process
    should not be terminated after closing the terminal.
 2. If the process survived after closing the terminal, kill
@@ -560,7 +560,7 @@ You can get the `PID` of the process using `ps` program or `pidof`.
 
 ## Standard input, output and error
 
-Bash is started with 3 file descriptors open pointing to the terminal, numbered `0`, `1` and `2`.
+Bash is started with 3 file descriptors open, pointing to the terminal, numbered `0`, `1` and `2`.
 They are called standard input, standard output and standard error stream.
 
 The `cat` program will block, waiting for input from `0`.

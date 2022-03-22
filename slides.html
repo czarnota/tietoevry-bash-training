@@ -276,12 +276,12 @@ p > code, li > code {
 </section>
 <section id="examples-of-system-shells---xbox-series-x-dashboard" class="level2">
 <h2>Examples of system shells - Xbox Series X dashboard</h2>
-<p>The purpose of Xbox dashboard is to run processes (games), therefore it can also be considered as an example of graphical system shell.</p>
+<p>The purpose of Xbox dashboard is to run processes (games), therefore it can also be considered as an example of a graphical system shell.</p>
 <p><img src="assets/xoneshell.jpg" /></p>
 </section>
 <section id="examples-of-system-shells---bash" class="level2">
 <h2>Examples of system shells - Bash</h2>
-<p>Bash is an example of a command-line shell. Other example of command line shells include i. a.: <code>zsh</code>, <code>tcsh</code>, <code>busybox ash</code> and <code>fish</code> shell</p>
+<p>Bash is an example of a command-line shell. Other example of command line shells include i. a. <code>zsh</code>, <code>tcsh</code>, <code>busybox ash</code> and <code>fish</code> shell.</p>
 <p><img src="assets/bashshell.png" /></p>
 </section>
 <section id="question-why-do-we-still-use-a-command-line-interface" class="level2">
@@ -310,7 +310,7 @@ p > code, li > code {
 </section>
 <section id="example-programs---filesystem-operations" class="level2">
 <h2>Example programs - filesystem operations</h2>
-<p>Examples of programs that manage files and directories</p>
+<p>Examples of programs that manage files and directories:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">cat</span> p0             # print p0 to standard output</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">cat</span> p0 p1 p2       # print p0, p1 and p2 to standard output</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">rm</span> x               # remove file</span>
@@ -332,15 +332,15 @@ p > code, li > code {
 </section>
 <section id="example-programs---access-control" class="level2">
 <h2>Example programs - access control</h2>
-<p>Examples of programs that manage file and directory permissions</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chmod</span> 777 f        # change <span class="st">&#39;f&#39;</span> permissions to 777</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chmod</span> u+x,g+x,o+x  # add execute permission to user, group and others</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chown</span> user a       # change owner of <span class="st">&#39;a&#39;</span> to <span class="st">&#39;user&#39;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chown</span> group:user a <span class="co"># change group to &#39;gruop&#39; and owner of &#39;a&#39; to &#39;user&#39;</span></span></code></pre></div>
+<p>Examples of programs that manage file and directory permissions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chmod</span> 777 f         # change <span class="st">&#39;f&#39;</span> permissions to 777</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chmod</span> u+x,g+x,o+x   # add execute permission to user, group and others</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chown</span> user a        # change owner of <span class="st">&#39;a&#39;</span> to <span class="st">&#39;user&#39;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chown</span> group:user a  # change group to <span class="st">&#39;gruop&#39;</span> and owner of <span class="st">&#39;a&#39;</span> to <span class="st">&#39;user&#39;</span></span></code></pre></div>
 </section>
 <section id="example-programs---archive-management" class="level2">
 <h2>Example programs - archive management</h2>
-<p>Examples of programs that manage archives</p>
+<p>Examples of programs that manage archives:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">tar</span> -tf archive.tar.gz             # print (t) <span class="ex">files</span> in archive (f)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">tar</span> -xzvf archive.tar.gz           # extract (x) <span class="ex">.gz</span> (z) <span class="ex">archive</span>, verbosely (v)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">tar</span> -xjvf archive.tar.bz2 -C dir   # extract (x) <span class="ex">.bz2</span> (j) <span class="ex">archive</span>, verbosely (v) <span class="ex">to</span> <span class="st">&#39;dir&#39;</span></span>
@@ -353,9 +353,9 @@ p > code, li > code {
 </section>
 <section id="question-what-is-the-difference-between-a-symbolic-link-and-a-hard-link" class="level2">
 <h2>Question: What is the difference between a symbolic link and a hard link?</h2>
-<p>We can create symbolic links using <code>ln</code> program:</p>
+<p>We can create symbolic links using <code>ln</code> program.</p>
 <pre class="console"><code>$ ln target destination</code></pre>
-<p>We can create hard links using <code>ln</code> program:</p>
+<p>We can create hard links using <code>ln</code> program and <code>-s</code> option.</p>
 <pre class="console"><code>$ ln -s target destination</code></pre>
 <p>What is the difference?</p>
 </section>
@@ -367,12 +367,12 @@ p > code, li > code {
 </section>
 <section id="task-the-land-of-tietoevry" class="level2">
 <h2>Task: The Land of TietoEvry</h2>
-<p>Download the following archive using <code>wget</code> program:</p>
+<p>Download the following archive using <code>wget</code> program.</p>
 <pre><code>$ wget czarnota.github.io/data/task-land.tar.gz</code></pre>
 <ol class="incremental" type="1">
-<li>Extract the archive</li>
+<li>Extract the archive.</li>
 <li>Complete all listed missions</li>
-<li>Create a <code>.tar.gz</code> archive from the directory</li>
+<li>Create a <code>.tar.gz</code> archive from the directory.</li>
 </ol>
 </section>
 </section>
@@ -381,16 +381,16 @@ p > code, li > code {
 <section id="options-and-arguments-1" class="level2">
 <h2>Options and arguments</h2>
 <p>All characters (with the exception of a few built-in bash constructs/operators) following the program’s name are interpreted by the program and can influence its behavior.</p>
-<pre class="console"><code>$ PROGRAM_NAME ARGUMENTS...</code></pre>
-<pre class="console"><code>$ chmod o+w,g+w file</code></pre>
-<pre class="console"><code>$ find . \( -name words -or -name x \) -and -not -executable</code></pre>
-<pre class="console"><code>$ tcpdump -i eth0 ip or arp</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">PROGRAM_NAME</span> ARGUMENTS...</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">chmod</span> o+w,g+w file</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">find</span> . <span class="dt">\(</span> -name words -or -name x <span class="dt">\)</span> -and -not -executable</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">tcpdump</span> -i eth0 ip or arp</span></code></pre></div>
 </section>
 <section id="posix-syntax" class="level2">
 <h2>POSIX Syntax</h2>
-<p>Programs can parse options and arguments as they like, but there exists a common convention that most unix programs follow. This convention is standarised by POSIX.</p>
-<p>In below example <code>-a</code> is an option, <code>-b barg</code> is an option with an argument <code>barg</code> and <code>arg0</code> and <code>arg1</code> are just arguments.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -a -b barg arg0 arg1 # The <span class="st">&#39;barg&#39;</span> is an argument to -b option</span>
+<p>Programs can parse options and arguments as they like, but there exists a common convention that most Unix programs follow. This convention is standarised by POSIX.</p>
+<p>In the below example, <code>-a</code> is an option, <code>-b barg</code> is an option with an argument <code>barg</code> and <code>arg0</code> and <code>arg1</code> are just arguments.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -a -b barg arg0 arg1 # The <span class="st">&#39;barg&#39;</span> is an argument to the -b option</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -ab barg arg0 arg1   # You can <span class="st">&quot;glue&quot;</span> options together</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -a -- -b barg arg1   # You can terminate options using --, here -b is an argument</span></code></pre></div>
 <p>For example, the below two commands are equivalent:</p>
@@ -399,68 +399,68 @@ $ tar -xzvfarch.tar.gz</code></pre>
 </section>
 <section id="extended-gnu-syntax" class="level2">
 <h2>Extended GNU Syntax</h2>
-<p>GNU introduced long options (supported using <code>getopt_long()</code> and <code>getopt_long_only()</code> C library functions)</p>
+<p>GNU introduced long options (supported using <code>getopt_long()</code> and <code>getopt_long_only()</code> C library functions).</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -ab --option --key=value arg0 arg1 arg2   # getopt_long()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> -option -key arg0 arg1 arg2               # getopt_long_only()</span></code></pre></div>
-<p>Examples of long options</p>
+<p>Examples of long options:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ps</span> --user             # getopt_long()</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ls</span> --all              # getopt_long()</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">find</span> . -name x        # getopt_long_only()</span></code></pre></div>
 </section>
 <section id="legacy-bsd-syntax" class="level2">
 <h2>Legacy BSD Syntax</h2>
-<p>Something that <code>ps</code> manual page calls a <code>BSD Syntax</code>. It is supported only by a few programs</p>
+<p>Convention that <code>ps</code> manual page calls a <code>BSD Syntax</code>. It is supported only by a few programs.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> ab arg0 arg1 arg2     # options are: <span class="st">&#39;a&#39;</span> and <span class="st">&#39;b&#39;</span>, the rest are arguments</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">prog</span> abcdef arg0 arg1 arg2 # options are: <span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>, the rest are arguments</span></code></pre></div>
-<p>Examples</p>
+<p>Examples:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ps</span> aux</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">tar</span> xzvf arch.tar.gz</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">tar</span> czf files.tar.gz file1 file2</span></code></pre></div>
 </section>
 <section id="command-syntax---conclusion" class="level2">
 <h2>Command syntax - conclusion</h2>
-<p>It is important to note that the options and arguments are interpreted by the executed program and not by the shell. For example, if we execute <code>ls</code></p>
+<p>It is important to note that the options and arguments are interpreted by the executed program and not by the shell. For example, if we execute <code>ls</code>:</p>
 <pre><code>$ ls -l -a /home</code></pre>
-<p>Then the <code>ls</code> program would receive the following arguments in its <code>main()</code> function.</p>
+<p>Then the <code>ls</code> program would receive the following arguments in its <code>main()</code> function:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>{</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// argv = { &quot;ls&quot;, &quot;-l&quot;, &quot;-a&quot;, &quot;/home&quot; }</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// argc = 4</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    ...</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p><strong>Bash only splits the input line into tokens</strong></p>
+<p><strong>Bash only splits the input line into tokens.</strong></p>
 </section>
 <section id="question-which-is-correct" class="level2">
 <h2>Question: Which is correct?</h2>
 <p>Which commands would you use to create directory called <code>-f</code>, list its contents and then remove it afterwards?</p>
 <p>These commands:</p>
-<pre class="console"><code>$ mkdir -f
-$ ls -f
-$ rm -fr -f</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">mkdir</span> -f</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ls</span> -f</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">rm</span> -fr -f</span></code></pre></div>
 <p>Or these:</p>
-<pre class="console"><code>$ mkdir &quot;-f&quot;
-$ ls &quot;-f&quot;
-$ rm -fr &quot;-f&quot;</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">mkdir</span> <span class="st">&quot;-f&quot;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ls</span> <span class="st">&quot;-f&quot;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">rm</span> -fr <span class="st">&quot;-f&quot;</span></span></code></pre></div>
 </section>
 <section id="answer-which-is-correct" class="level2">
 <h2>Answer: Which is correct?</h2>
 <p>Neither. The quotes <code>""</code> make no difference to the executed program. It will still see <code>-f</code> in its argument list. We need to use <code>--</code> to terminate the list of options.</p>
-<pre class="console"><code>$ mkdir -- &quot;-f&quot;
-$ ls -- &quot;-f&quot;
-$ rm -fr -- &quot;-f&quot;</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">mkdir</span> -- <span class="st">&quot;-f&quot;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ls</span> -- <span class="st">&quot;-f&quot;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">rm</span> -fr -- <span class="st">&quot;-f&quot;</span></span></code></pre></div>
 </section>
 <section id="example-programs---find" class="level2">
 <h2>Example programs - find</h2>
-<p>The <code>find</code> program searches for files or directories. For example to find all files named <code>lib_functions.c</code> starting our search from the current working directory <code>.</code>, we can do:</p>
+<p>The <code>find</code> program searches for files and directories. For example to find all files named <code>lib_functions.c</code> starting our search from the current working directory <code>.</code>, we can do:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">find</span> . -name <span class="st">&quot;lib_functions.c&quot;</span></span></code></pre></div>
-<p>We can search in a case insensitive mode, also using wildcard patterns. The below example will print all files that start with string <code>host</code> (case insensitive). Also it will not print any directories <code>-type f</code></p>
+<p>We can search in a case insensitive mode, also using wildcard patterns. The below example will print all files that start with string <code>host</code> (case insensitive). Also, it will not print any directories (<code>-type f</code>).</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">find</span> / -iname <span class="st">&quot;host*&quot;</span> -type f</span></code></pre></div>
-<p>We can execute a program on each file with <code>.tmp</code> extension. The below command will remove all <code>.tmp</code> files, but will prompt for confirmation before removal (<code>rm -i</code>).</p>
+<p>We can execute a program on each file with <code>.tmp</code> extension. The below command will remove all <code>.tmp</code> files, but will prompt for confirmation before removal (<code>rm -i</code>):</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">find</span> . -name <span class="st">&quot;*.tmp&quot;</span> -exec rm -i {} <span class="dt">\;</span></span></code></pre></div>
 </section>
 <section id="task-svg-to-png-converter" class="level2">
 <h2>Task: SVG to PNG converter</h2>
-<p>Download and extract, using the terminal.</p>
+<p>Download and extract, using the terminal:</p>
 <pre><code>https://github.com/simple-icons/archive/develop.zip</code></pre>
 <ol class="incremental" type="1">
 <li>Convert all <code>.svg</code> icons starting <strong>with the same letter as your surname</strong> into <code>.png</code> files.</li>
@@ -478,7 +478,7 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 <h1>Processes</h1>
 <section id="the-difference-between-a-program-and-a-process" class="level2">
 <h2>The difference between a program and a process</h2>
-<p>A process is a program that is being executed</p>
+<p>A process is a program that is being executed.</p>
 <p>Program is a list of instructions to be executed (just like a cooking recipe) and a process is an act of executing these instructions (just like cooking). <img src="assets/programandprocess.png" /></p>
 </section>
 <section id="what-is-a-proces" class="level2">
@@ -487,26 +487,26 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 <ul class="incremental">
 <li><strong>Processor state (registers)</strong> For <code>x86_64</code> these are i. a:
 <ul class="incremental">
-<li><code>rbp</code> - base of the stack (frame pointer)</li>
-<li><code>rsp</code> - stack pointer</li>
-<li><code>rip</code> - program counter</li>
-<li><code>rflags</code> - flags register</li>
-<li>general purpose registers: <code>rax</code>, <code>rcx</code>, <code>rdx</code>, <code>rbx</code>, <code>rsi</code>, <code>rdi</code>, <code>r8</code>-<code>r15</code></li>
+<li><code>rbp</code> - base of the stack (frame pointer);</li>
+<li><code>rsp</code> - stack pointer;</li>
+<li><code>rip</code> - program counter;</li>
+<li><code>rflags</code> - flags register;</li>
+<li>general purpose registers: <code>rax</code>, <code>rcx</code>, <code>rdx</code>, <code>rbx</code>, <code>rsi</code>, <code>rdi</code>, <code>r8</code>-<code>r15</code>.</li>
 </ul></li>
-<li><strong>Virtual memory</strong> (Page table) (pointer by <code>CR3</code> register)</li>
+<li><strong>Virtual memory</strong> (Page table) (pointer by <code>CR3</code> register).</li>
 <li><strong>Open file descriptors</strong>, for example:
 <ul class="incremental">
-<li>regular files (opened by <code>open()</code>)</li>
-<li>network sockets (opened by <code>socket()</code>, <code>accept()</code>)</li>
-<li>pipes (opened by <code>pipe()</code>)</li>
+<li>regular files (opened by <code>open()</code>);</li>
+<li>network sockets (opened by <code>socket()</code>, <code>accept()</code>);</li>
+<li>pipes (opened by <code>pipe()</code>).</li>
 </ul></li>
-<li>Other data structure important for Linux kernel</li>
+<li>Other data structure important for Linux kernel.</li>
 </ul>
 </section>
 <section id="how-linux-represents-processes" class="level2">
 <h2>How Linux represents processes?</h2>
-<p>In Linux kernel every process is represented by a <code>struct task_struct</code></p>
-<p>Below are some fields in this structure:</p>
+<p>In Linux kernel every process is represented by a <code>struct task_struct</code>.</p>
+<p>Below are some fields located in this structure:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> task_struct {</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> list_head tasks           <span class="co">/* An entry on a process list */</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    pid_t pid;                       <span class="co">/* Process identifies (PID)  */</span></span>
@@ -529,7 +529,7 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 </section>
 <section id="how-can-we-check-which-processes-are-running-at-the-moment" class="level2">
 <h2>How can we check which processes are running at the moment</h2>
-<p>The <code>ps</code> program can show us all processes, the <code>top</code> program display processes interactively, the <code>pstree</code> prints a tree of processes and the pseudo file system <code>/proc</code> contains entries representing every process.</p>
+<p>The <code>ps</code> program can show us all processes, the <code>top</code> program displays processes interactively, the <code>pstree</code> prints a tree of processes and the pseudo file system <code>/proc</code> contains entries representing every process.</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">ps</span> aux</span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>$ <span class="ex">top</span></span></code></pre></div>
 <div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">pstree</span></span></code></pre></div>
@@ -557,7 +557,7 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 </section>
 <section id="running-processes-in-background" class="level2">
 <h2>Running processes in background</h2>
-<p>In <code>ls &amp;</code> command, the <code>&amp;</code> will run the process in the background. It omits the call to <code>waitpid()</code>.</p>
+<p>In <code>ls &amp;</code> command, the <code>&amp;</code> will run the process in the background. It omits the call to <code>waitpid()</code>:</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (true) {</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char</span> *line = readline(<span class="st">&quot;$ &quot;</span>);</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char</span> *my_argv[<span class="dv">12</span>] = {<span class="dv">0</span>};</span>
@@ -583,7 +583,7 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 </section>
 <section id="answer-if-we-omit-waitpid-and-bash-is-still-running-why-there-are-no-zombie-processes" class="level2">
 <h2>Answer: If we omit <code>waitpid()</code> and bash is still running, why there are no zombie processes?</h2>
-<p>When a child process finishes, the parent is notified with <code>SIGCHLD</code>. Bash calls <code>wait</code> system call in <code>SIGCHLD</code> handler, which allows to read process exit code and remove it from list of processes.</p>
+<p>When a child process finishes, the parent is notified with <code>SIGCHLD</code>. Bash calls <code>wait</code> system call in <code>SIGCHLD</code> handler, which allows to read process exit code and remove it from the list of processes.</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sigchld_handler () flushes at least one of the children that we are</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co">   waiting for.  It gets run when we have gotten a SIGCHLD signal. */</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> sighandler sigchld_handler(<span class="dt">int</span> sig) {</span>
@@ -600,8 +600,8 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 </section>
 <section id="question-will-zombie-process-be-created" class="level2">
 <h2>Question: Will zombie process be created?</h2>
-<p>The <code>exec</code> command calls one of <code>exec*()</code> system calls, which causes current process to execute different program, by replacing the code section of the current process and reinitializing process memory.</p>
-<p>The <code>/usr/bin/sleep</code> simply wait the specified number of seconds</p>
+<p>The <code>exec</code> command calls one of <code>exec*()</code> system calls, which causes the current process to execute a different program, by replacing the code section of the current process and reinitializing the process memory.</p>
+<p>The <code>/usr/bin/sleep</code> simply waits the specified number of seconds.</p>
 <p>The questions are:</p>
 <ul class="incremental">
 <li><strong>Will zombie process be created in the below case?</strong></li>
@@ -621,24 +621,24 @@ $ rm -fr -- &quot;-f&quot;</code></pre>
 <ul class="incremental">
 <li>Yes.</li>
 </ul></li>
-<li><strong>Why it will be created</strong>
+<li><strong>Why will it be created?</strong>
 <ul class="incremental">
 <li>Because <code>sleep</code> does not implement <code>SIGCHLD</code> signal handler.</li>
 </ul></li>
-<li><strong>How long will it exist in a zombie state</strong>
+<li><strong>How long will it exist in a zombie state?</strong>
 <ul class="incremental">
-<li>The child executes for <code>5</code> seconds, the parent <code>3600</code> seconds. The child will be in zombie state <code>3595</code> seconds.</li>
+<li>The child executes for <code>5</code> seconds, the parent for <code>3600</code> seconds. The child will be in zombie state for <code>3595</code> seconds.</li>
 </ul></li>
 </ul>
 </section>
 <section id="detaching-processes-from-the-shell" class="level2">
 <h2>Detaching processes from the shell</h2>
-<p>Runs <code>COMMAND</code>, redirects <code>stdout</code> and <code>stderr</code> to files in order to avoid termination from closed terminal and removes the <code>PID</code> from bash job list, which will prevent bash from propagating <code>SIGHUP</code>.</p>
+<p>Runs <code>COMMAND</code>, redirects <code>stdout</code> and <code>stderr</code> to files in order to avoid termination from a closed terminal and removes the process identified by <code>PID</code> from the Bash job list, which will prevent Bash from propagating <code>SIGHUP</code>:</p>
 <pre><code>$ COMMAND &gt;file 2&gt;file &amp;
 $ disown PID</code></pre>
-<p>Runs <code>COMMAND</code>, but prevents it from receiving <code>SIGHUP</code>, also redirects the <code>stdin</code> and <code>stdout</code>.</p>
+<p>Runs <code>COMMAND</code>, but prevents it from receiving <code>SIGHUP</code>, also redirects the <code>stdin</code> and <code>stdout</code>:</p>
 <pre><code>$ nohup COMMAND &amp;</code></pre>
-<p>Runs process with the help of <code>screen</code> program, which thanks to <code>-d</code> option will disconnect itself from the <code>bash</code> process.</p>
+<p>Runs process with the help of <code>screen</code> program, which thanks to <code>-d</code> option will disconnect itself from the Bash process:</p>
 <pre><code>$ screen -d -m COMMAND</code></pre>
 </section>
 <section id="example-programs---watch" class="level2">
@@ -652,7 +652,7 @@ $ disown PID</code></pre>
 <section id="task-detaching-from-the-terminal" class="level2">
 <h2>Task: Detaching from the terminal</h2>
 <ol class="incremental" type="1">
-<li>Run <code>tar</code> program so that it would compress the selected directory located in home directory into <code>~/archive.tar.gz</code> every minute. The process should not be terminated after closing the terminal.</li>
+<li>Run <code>tar</code> program so that it would compress the selected directory located in the home directory into <code>~/archive.tar.gz</code> every minute. The process should not be terminated after closing the terminal.</li>
 <li>If the process survived after closing the terminal, kill it with <code>kill</code> program.</li>
 </ol>
 <p>You can get the <code>PID</code> of the process using <code>ps</code> program or <code>pidof</code>.</p>
@@ -662,7 +662,7 @@ $ disown PID</code></pre>
 <h1>Input and output</h1>
 <section id="standard-input-output-and-error" class="level2">
 <h2>Standard input, output and error</h2>
-<p>Bash is started with 3 file descriptors open pointing to the terminal, numbered <code>0</code>, <code>1</code> and <code>2</code>. They are called standard input, standard output and standard error stream.</p>
+<p>Bash is started with 3 file descriptors open, pointing to the terminal, numbered <code>0</code>, <code>1</code> and <code>2</code>. They are called standard input, standard output and standard error stream.</p>
 <p>The <code>cat</code> program will block, waiting for input from <code>0</code>.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>$ <span class="fu">cat</span></span></code></pre></div>
 <p>The <code>echo</code> program will write to <code>1</code>.</p>
