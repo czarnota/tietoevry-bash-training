@@ -13,12 +13,24 @@ read -rd '' STYLE <<'EOF'
               display: flex; flex-direction: column; overflow: hidden; flex: 1 1 auto;
               box-shadow: 0 0 0.5em #ddd; color: #333; }
     h1 { align-items: center; flex-direction: row; padding: 0.75em; }
-    body { margin: 0; padding: 0; font-family: sans-serif; background: rgb(237, 237, 240); }
+    body { margin: 0; padding: 0; font-family: sans-serif; background: rgb(237, 237, 240); font-size: 200px; }
     h2 { font-size: 2em; color: #005; }
     img { display: block; margin: auto; width: 100%; height: 100%; overflow: hidden; object-fit: contain;}
     section > p, section > ul { margin: 0 0 0.8em 0; line-height: 1.5em;}
     ul { padding-left: 1em; }
     h2 { margin: 0 0 0.4em 0; }
+
+    @page {
+        size: 16in 9in;
+        margin: 0;
+    }
+
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+        .level2, h1 { max-height: 100vh; margin: 0; }
+    }
 
 .language-console .gp { color: #6ec071; }
 
@@ -335,6 +347,7 @@ EOF
 
 main () {
     local document="$1"; shift || return
+    local out="$1"; shift || return
 
     local template_file="${document//.md/.template.html}"
 
@@ -344,7 +357,8 @@ main () {
            --section-divs \
            --template $template_file \
            -i "$document" \
-           -t html
+           -t html \
+           -o "$out"
 
     local ret="$?"
 
