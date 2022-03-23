@@ -1015,7 +1015,7 @@ http://github.com/symfony/symfony
   (c) Your Name <yourname@example.com>
 ```
 
-You may need to use `sed -i` and `grep -R -l`.
+You may need to use `sed -i`, `grep -R -l` and `xargs`.
 
 # Glob patterns
 
@@ -1704,7 +1704,7 @@ standarized by POSIX.
 ## Task: Converter
 
 Create script that will convert decimals to hexadecimals and hexadecimals
-to decimal.
+to decimals.
 
 Example usage:
 ```bash
