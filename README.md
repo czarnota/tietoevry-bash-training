@@ -68,7 +68,7 @@ For example if we want to run a `ls` program, we can type:
 $ ls -l -a /home
 ```
 
-## Example programs - filesystem operations
+## Example programs - file system operations
 Examples of programs that manage files and directories:
 ```bash
 $ cat p0             # print p0 to standard output
@@ -177,7 +177,7 @@ $ tcpdump -i eth0 ip or arp
 
 Programs can parse options and arguments as they like, but there exists
 a common convention that most Unix programs follow. This convention is
-standarised by POSIX.
+standardized by POSIX.
 
 In the below example, `-a` is an option, `-b barg` is an option with an argument `barg`
 and `arg0` and `arg1` are just arguments.
@@ -332,7 +332,7 @@ Program is a list of instructions to be executed (just like a cooking recipe) an
 a process is an act of executing these instructions (just like cooking).
 ![](assets/programandprocess.png)
 
-## What is a proces
+## What is a process
 
 A process is a program that is being executed. It consists of:
 
@@ -378,7 +378,7 @@ Linux internally keeps a circular list of all processes running in the system.
 
 ![](assets/12.svg)
 
-## How can we check which processes are running at the moment
+## How can we check which processes are running at the moment?
 
 The `ps` program can show us all processes, the `top` program displays
 processes interactively, the `pstree` prints a tree of processes and
@@ -396,7 +396,7 @@ $ pstree
 $ ls /proc
 ```
 
-## Running processes in Bash - how does it work
+## Running processes in Bash - how does it work?
 
 A primitive system shell could be implemented like this:
 ```c
@@ -475,7 +475,7 @@ static sighandler sigchld_handler(int sig) {
 
 The `exec` command calls one of `exec*()` system calls, which causes the current
 process to execute a different program, by replacing the code section of the current
-process and reinitializing the process memory.
+process and re-initializing the process memory.
 
 The `/usr/bin/sleep` simply waits the specified number of seconds.
 
@@ -531,7 +531,7 @@ $ screen -d -m COMMAND
 
 ## Example programs - `watch`
 
-Executes a program periodically, showing output fullscreen.
+Executes a program periodically, showing output full-screen.
 
 
 Show processes periodically:
@@ -599,7 +599,7 @@ Start `ls` with `foo` file as standard error stream.
 $ ls --cookies 2> foo
 ```
 
-## Opening other file descriptos
+## Opening other file descriptors
 
 The `0`, `1` and `2` are just arbitrary numbers. You can open
 other file descriptors if you want.
@@ -649,15 +649,15 @@ lrwx------ 64 john 20 mar 23:20 255 -> /dev/pts/9
 
 As you can see three open file descriptors,
 stdin (`0`), stdout (`1`) and stderr (`2`), point to `/dev/pts/9`, which is
-a **pseudoterminal slave**.
+a **pseudo-terminal slave**.
 
 These are examples of an character device. A character device acts like a
 regular file, but instead of accessing the hard drive, a different specific
 functionality will be invoked in the kernel, when you write and read from it.
 
-## The pseudoterminal master and slave
+## The pseudo-terminal master and slave
 
-The terminal emulator opens the `/dev/ptmx`, creates a pseudoterminal
+The terminal emulator opens the `/dev/ptmx`, creates a pseudo-terminal
 slave `/dev/pts/X`, forks a child bash process with `0`, `1` and `2` file
 descriptors set to `/dev/pts/X`.
 
@@ -893,7 +893,7 @@ The following happens:
 
 ## Subshells - optimization
 
-Bash will omit the second `fork()` is it is not neccessary.
+Bash will omit the second `fork()` is it is not necessary.
 
 ```
 $ (ls)
@@ -944,7 +944,7 @@ $ bash <(curl -s https://raw.githubusercontent.com/czarnota/bash-snake/master/sn
 Captures the standard output of the command in brackets and "expands" it
 into the shell
 
-Install linux headers for current linux version:
+Install Linux headers for current Linux version:
 ```bash
 $ sudo apt install linux-headers-$(uname -r)
 ```
@@ -1021,7 +1021,7 @@ You may need to use `sed -i`, `grep -R -l` and `xargs`.
 
 ## Operator `*`
 
-The `*` operator matches any charaters.
+The `*` operator matches any characters.
 
 The shell will replace the pattern with all files that match it.
 
@@ -1103,7 +1103,7 @@ $ touch path/to/{przemek,mike,tom}{1..10}
 
 ## Operator `~`
 
-The `~` expands to user's home firectory:
+The `~` expands to user's home directory:
 
 ```bash
 $ echo ~/directory
@@ -1165,7 +1165,7 @@ Remove `file` and if it was removed successfully, then create it again:
 $ rm file && touch file
 ```
 
-Extract `f.tar.gz` archive only if it was downloaaded successfully
+Extract `f.tar.gz` archive only if it was downloaded successfully
 ```bash
 $ wget http://x.com/f.tar.gz && tar -czvf f.tar.gz
 ```
@@ -1185,7 +1185,7 @@ $ echo 1 || echo 2 && echo 3
 1
 3
 ```
-Although the boolean logic would suggest the following order:
+Although the Boolean logic would suggest the following order:
 ```bash
 $ echo 1 || ( echo 2 && echo 3 )
 ```
@@ -1478,7 +1478,7 @@ $ echo "${!x[@]}"
 foo bar foobar
 ```
 
-## Conditional staments
+## Conditional statements
 
 Bash supports `if` conditional statement.
 ```bash
@@ -1592,7 +1592,7 @@ Checking if `x` is not empty and equals `"foo"`
 if [[ -n "$x" && "$x" == "foo" ]]; then echo pass; fi
 ```
 
-It is not standarized by POSIX, if portability is required use `[`
+It is not standardized by POSIX, if portability is required use `[`
 
 ## Question: What is going on here?
 
@@ -1699,7 +1699,7 @@ x=$[a + b]
 ```
 
 The `$(())` should be preferred if portability is required, because it is
-standarized by POSIX.
+standardized by POSIX.
 
 ## Task: Converter
 
@@ -1844,7 +1844,7 @@ done
 
 ## `for (())` loop
 
-There is another version of `for` loop which is similat to `for` loop
+There is another version of `for` loop which is similar to `for` loop
 from `C` language.
 
 ```bash
@@ -1865,7 +1865,7 @@ Print all powers of 2.
 for ((i = 1; i > 0; i <<= 1)); do echo "$i"; done
 ```
 
-## Loops have standard input and standard ouput
+## Loops have standard input and standard output
 
 Do-it-yourself version of `/usr/bin/yes`:
 ```bash
@@ -1944,16 +1944,15 @@ To access 10-th argument you need to use `${10}`.
 
 ## The `getopts` built-in
 
-The `getopts` build-in allows you to support POSIX short options, like
-`-a` or `-b`. For example to support `./program -a -b -c -d arg -e a b c` we
+The `getopts` built-in allows you to support POSIX short options, like
+`-a` or `-b`. For example to support `./program -a -b -c arg -e a b c` we
 can use the following loop:
 ```bash
-while getopts ":abcd:e" option; do
+while getopts ":abc:e" option; do
     case "$option" in
         a) opt_a=1 ;;
         b) opt_b=1 ;;
-        c) opt_c=1 ;;
-        d) opt_d="$OPTARG" ;;
+        c) opt_c="$OPTARG" ;;
         e) opt_e=1 ;;
         :) echo "-$OPTARG requieres an argument" 1>&2 ;;
         \?) echo "-$OPTARG doesn't exist" 1>&2 ;;
@@ -1963,9 +1962,9 @@ done
 shift $((OPTIND - 1))
 ```
 
-After `getopts` is executed once, the next argument number that will be
+After `getopts` is executed once, the next argument to be
 processed is stored in `$OPTIND`. This is why at the end of the above loop,
-we do `shift $((OPTIND - 1))` to remove the arguments that are already parsed.
+we do `shift $((OPTIND - 1))` to remove already parsed arguments.
 
 ## Parsing long options
 
@@ -1978,15 +1977,14 @@ while true; do
     arg="$1"
     case "$arg" in
         -a|--alfa)
-            shift || break;
+            shift || break
             opt_alfa=1 ;;
         -g|--gamma)
-            shift || break;
+            shift || break
             opt_gamma="$1"
             if ! shift; then
-                echo "$arg requires and argument" 1>&2; break
-            fi
-            ;;
+                echo "err: $arg requires an argument" 1>&2; break
+            fi ;;
         -*) echo "unrecognized option: $arg" 1>&2; break ;;
         *) break ;;
     esac
@@ -2191,7 +2189,7 @@ b   # outputs "local value"
 
 ## Handling arguments in functions
 
-It is a good practive to assign arguments to variables, to document
+It is a good practice to assign arguments to variables, to document
 their meaning.
 
 ```bash
@@ -2231,7 +2229,7 @@ introduce Przemysław Czarnota 29
 ```
 
 - all required arguments must be provided to a function in order for the body
-  to execude;
+  to execute;
 - adding a new argument in the middle does not require update of the following lines;
 - reordering arguments is done by just reordering lines.
 
