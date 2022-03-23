@@ -12,7 +12,7 @@ read -rd '' STYLE <<'EOF'
                   font-size: 12px; aspect-ratio: 16 / 9; padding: 1.5em;
                   display: flex; flex-direction: column; overflow: hidden;
                   flex: 1 1 auto; box-shadow: 0 0 0.5em #ddd; color: #333; }
-    h1 { align-items: center; flex-direction: row; padding: 0.75em; }
+    h1 { align-items: center; flex-direction: row; padding: 0.75em; margin: 0.5em auto;}
     body { margin: 0; padding: 0; font-family: sans-serif;
            background: rgb(237, 237, 240); font-size: 200px; }
     h2 { font-size: 2em; color: #005; padding: 0; }

@@ -1703,7 +1703,7 @@ standardized by POSIX.
 
 ## Task: Converter
 
-Create script that will convert decimals to hexadecimals and hexadecimals
+Create a script that will convert decimals to hexadecimals and hexadecimals
 to decimals.
 
 Example usage:
@@ -1993,7 +1993,7 @@ done
 
 ## Task: Installing ssh keys
 
-Create script that is invoked as `./install-ssh-key HOST` and will copy
+Create a script that is invoked as `./install-ssh-key HOST` and will copy
 your public key to `HOST` machine. If the public key does not exist it will
 run `ssh-keygen` and generate it.
 
@@ -2255,7 +2255,7 @@ przemek
 
 ## Task: Bookmarks
 
-Create script `./bookmarks.sh` and source it in your
+Create a script `./bookmarks.sh` and source it in your
 `~/.bashrc`. The `./bookmarks.sh` should define a function called `goto`, which
 allows the user to navigate and create bookmarks.
 
@@ -2263,14 +2263,13 @@ allows the user to navigate and create bookmarks.
 # Save current working directory as a new bookmark under the same name as directory
 $ goto +
 
-#Same as the above but the bookmark will be called `foo`
+# Same as the above, but the bookmark will be called `foo`
 $ goto + foo
 
-# Change directory `cd` to the `foo` bookmark
+# Change directory - `cd` to the `foo` bookmark
 $ goto foo
 
-# Should return an errorcode and print a message to standard error
-# that the 'asd' bookmark does not exist
+# Using non-existent bookmark should return an errorcode and print an error to stderr
 $ goto asd 
 
 # List all bookmarks

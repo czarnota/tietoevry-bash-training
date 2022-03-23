@@ -9,7 +9,7 @@
                   font-size: 12px; aspect-ratio: 16 / 9; padding: 1.5em;
                   display: flex; flex-direction: column; overflow: hidden;
                   flex: 1 1 auto; box-shadow: 0 0 0.5em #ddd; color: #333; }
-    h1 { align-items: center; flex-direction: row; padding: 0.75em; }
+    h1 { align-items: center; flex-direction: row; padding: 0.75em; margin: 0.5em auto;}
     body { margin: 0; padding: 0; font-family: sans-serif;
            background: rgb(237, 237, 240); font-size: 200px; }
     h2 { font-size: 2em; color: #005; padding: 0; }
@@ -1360,7 +1360,7 @@ strace: Process 871287 attached
 </section>
 <section id="task-converter" class="level2">
 <h2>Task: Converter</h2>
-<p>Create script that will convert decimals to hexadecimals and hexadecimals to decimals.</p>
+<p>Create a script that will convert decimals to hexadecimals and hexadecimals to decimals.</p>
 <p>Example usage:</p>
 <div class="sourceCode" id="cb185"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb185-1" title="1">$ <span class="ex">./conv</span> 0xA</a>
 <a class="sourceLine" id="cb185-2" title="2"><span class="ex">10</span></a>
@@ -1573,7 +1573,7 @@ strace: Process 871287 attached
 </section>
 <section id="task-installing-ssh-keys" class="level2">
 <h2>Task: Installing ssh keys</h2>
-<p>Create script that is invoked as <code>./install-ssh-key HOST</code> and will copy your public key to <code>HOST</code> machine. If the public key does not exist it will run <code>ssh-keygen</code> and generate it.</p>
+<p>Create a script that is invoked as <code>./install-ssh-key HOST</code> and will copy your public key to <code>HOST</code> machine. If the public key does not exist it will run <code>ssh-keygen</code> and generate it.</p>
 <div class="sourceCode" id="cb208"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb208-1" title="1">$ <span class="ex">./install-ssh-key</span> login@10.0.0.1</a></code></pre></div>
 <p>After running the program it should be possible to login without password</p>
 <div class="sourceCode" id="cb209"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb209-1" title="1">$ <span class="fu">ssh</span> login@10.0.0.1</a></code></pre></div>
@@ -1748,22 +1748,21 @@ $ rm archive.tar.gz</code></pre>
 </section>
 <section id="task-bookmarks" class="level2">
 <h2>Task: Bookmarks</h2>
-<p>Create script <code>./bookmarks.sh</code> and source it in your <code>~/.bashrc</code>. The <code>./bookmarks.sh</code> should define a function called <code>goto</code>, which allows the user to navigate and create bookmarks.</p>
+<p>Create a script <code>./bookmarks.sh</code> and source it in your <code>~/.bashrc</code>. The <code>./bookmarks.sh</code> should define a function called <code>goto</code>, which allows the user to navigate and create bookmarks.</p>
 <div class="sourceCode" id="cb231"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb231-1" title="1"><span class="co"># Save current working directory as a new bookmark under the same name as directory</span></a>
 <a class="sourceLine" id="cb231-2" title="2">$ <span class="ex">goto</span> +</a>
 <a class="sourceLine" id="cb231-3" title="3"></a>
-<a class="sourceLine" id="cb231-4" title="4"><span class="co">#Same as the above but the bookmark will be called `foo`</span></a>
+<a class="sourceLine" id="cb231-4" title="4"><span class="co"># Same as the above, but the bookmark will be called `foo`</span></a>
 <a class="sourceLine" id="cb231-5" title="5">$ <span class="ex">goto</span> + foo</a>
 <a class="sourceLine" id="cb231-6" title="6"></a>
-<a class="sourceLine" id="cb231-7" title="7"><span class="co"># Change directory `cd` to the `foo` bookmark</span></a>
+<a class="sourceLine" id="cb231-7" title="7"><span class="co"># Change directory - `cd` to the `foo` bookmark</span></a>
 <a class="sourceLine" id="cb231-8" title="8">$ <span class="ex">goto</span> foo</a>
 <a class="sourceLine" id="cb231-9" title="9"></a>
-<a class="sourceLine" id="cb231-10" title="10"><span class="co"># Should return an errorcode and print a message to standard error</span></a>
-<a class="sourceLine" id="cb231-11" title="11"><span class="co"># that the &#39;asd&#39; bookmark does not exist</span></a>
-<a class="sourceLine" id="cb231-12" title="12">$ <span class="ex">goto</span> asd </a>
-<a class="sourceLine" id="cb231-13" title="13"></a>
-<a class="sourceLine" id="cb231-14" title="14"><span class="co"># List all bookmarks</span></a>
-<a class="sourceLine" id="cb231-15" title="15">$ <span class="ex">goto</span></a></code></pre></div>
+<a class="sourceLine" id="cb231-10" title="10"><span class="co"># Using non-existent bookmark should return an errorcode and print an error to stderr</span></a>
+<a class="sourceLine" id="cb231-11" title="11">$ <span class="ex">goto</span> asd </a>
+<a class="sourceLine" id="cb231-12" title="12"></a>
+<a class="sourceLine" id="cb231-13" title="13"><span class="co"># List all bookmarks</span></a>
+<a class="sourceLine" id="cb231-14" title="14">$ <span class="ex">goto</span></a></code></pre></div>
 <p>Bookmarks can be implemented as symbolic links in the <code>~/.goto</code> directory.</p>
 </section>
 </section>
