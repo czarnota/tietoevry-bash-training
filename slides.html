@@ -1495,7 +1495,7 @@ strace: Process 871287 attached
 <span id="cb199-2"><a href="#cb199-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span></span>
 <span id="cb199-3"><a href="#cb199-3" aria-hidden="true" tabindex="-1"></a><span class="kw">done</span></span></code></pre></div>
 <p>Print all powers of 2.</p>
-<div class="sourceCode" id="cb200"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> <span class="kw">((</span>i = 1; i &gt; 0; &lt;&lt;= i<span class="kw">))</span>; <span class="kw">do</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">done</span></span></code></pre></div>
+<div class="sourceCode" id="cb200"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> <span class="kw">((</span>i = 1; i &gt; 0; i &lt;&lt;= 1<span class="kw">))</span>; <span class="kw">do</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$i</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">done</span></span></code></pre></div>
 </section>
 <section id="loops-have-standard-input-and-standard-ouput" class="level2">
 <h2>Loops have standard input and standard ouput</h2>

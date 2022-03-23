@@ -1862,7 +1862,7 @@ done
 
 Print all powers of 2.
 ```bash
-for ((i = 1; i > 0; <<= i)); do echo "$i"; done
+for ((i = 1; i > 0; i <<= 1)); do echo "$i"; done
 ```
 
 ## Loops have standard input and standard ouput
