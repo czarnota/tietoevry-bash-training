@@ -309,7 +309,7 @@ $ find . -name "*.tmp" -exec rm -i {} \;
 Download and extract, using the terminal:
 
 ```
-https://github.com/simple-icons/archive/develop.zip
+https://github.com/simple-icons/simple-icons/archive/refs/heads/develop.zip
 ```
 
 1. Convert all `.svg` icons starting **with the same letter as your surname**
@@ -778,9 +778,6 @@ $ xclip             # copy standard input to clipboard
 
 Modify your `~/.bashrc` so that you can see a live counter of total COVID
 cases world wide in your prompt.
-Create a tiny script that will run `curl` (in background), which will save
-current cases from the API in the `~/.cases` file. Then use `cat` to display
-it in the prompt.
 
 ```
 curl --location -s --request GET 'https://api.covid19api.com/summary'
@@ -789,10 +786,7 @@ curl --location -s --request GET 'https://api.covid19api.com/summary'
 You can modify your prompt in `.bashrc`
 
 ```bash
-foo () {
-    PS1="$(cat ~/.cases) \$"
-}
-PROMPT_COMMAND=foo
+PS1="$(curl ... | jq) \$"
 ```
 
 You will most likely need `jq` to parse `.json` or maybe `grep`.

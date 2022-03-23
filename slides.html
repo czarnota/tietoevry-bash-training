@@ -461,7 +461,7 @@ $ tar -xzvfarch.tar.gz</code></pre>
 <section id="task-svg-to-png-converter" class="level2">
 <h2>Task: SVG to PNG converter</h2>
 <p>Download and extract, using the terminal:</p>
-<pre><code>https://github.com/simple-icons/archive/develop.zip</code></pre>
+<pre><code>https://github.com/simple-icons/simple-icons/archive/refs/heads/develop.zip</code></pre>
 <ol class="incremental" type="1">
 <li>Convert all <code>.svg</code> icons starting <strong>with the same letter as your surname</strong> into <code>.png</code> files.</li>
 <li>Pack converted files into a <code>.zip</code> archive</li>
@@ -802,13 +802,10 @@ lrwx------ 64 john 20 mar 23:20 255 -&gt; /dev/pts/9</code></pre>
 </section>
 <section id="task-covid-prompt" class="level2">
 <h2>Task: Covid prompt</h2>
-<p>Modify your <code>~/.bashrc</code> so that you can see a live counter of total COVID cases world wide in your prompt. Create a tiny script that will run <code>curl</code> (in background), which will save current cases from the API in the <code>~/.cases</code> file. Then use <code>cat</code> to display it in the prompt.</p>
+<p>Modify your <code>~/.bashrc</code> so that you can see a live counter of total COVID cases world wide in your prompt.</p>
 <pre><code>curl --location -s --request GET &#39;https://api.covid19api.com/summary&#39;</code></pre>
 <p>You can modify your prompt in <code>.bashrc</code></p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">foo ()</span> <span class="kw">{</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">PS1=</span><span class="st">&quot;</span><span class="va">$(</span><span class="fu">cat</span> ~/.cases<span class="va">)</span><span class="st"> </span><span class="dt">\$</span><span class="st">&quot;</span></span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="va">PROMPT_COMMAND=</span>foo</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="va">PS1=</span><span class="st">&quot;</span><span class="va">$(</span><span class="ex">curl</span> ... <span class="kw">|</span> <span class="ex">jq</span><span class="va">)</span><span class="st"> </span><span class="dt">\$</span><span class="st">&quot;</span></span></code></pre></div>
 <p>You will most likely need <code>jq</code> to parse <code>.json</code> or maybe <code>grep</code>.</p>
 </section>
 </section>
