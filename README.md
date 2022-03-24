@@ -2013,8 +2013,8 @@ $ ./install-ssh-key login@10.0.0.1 login@10.0.0.2
 
 ## Task: Repeat
 
-Create a script named `repeat`, which will execute given command as
-many times as specified with `-n` parameter
+Create a script named `repeat`, which will execute a given command as
+many times as specified with `-n` parameter.
 
 ```bash
 $ ./repeat -n 3 echo foo bar baz
@@ -2024,10 +2024,10 @@ foo bar baz
 ```
 
 **Very important**: arguments must be correctly processed. This should
-create single file `"x y z"` 3 times:
+create a single file `"x y z"` 3 times.
 
 ```bash
-$ ./repeat -t 3 touch "x y z"
+$ ./repeat -n 3 touch "x y z"
 $ ls
 "x y z"
 ```
@@ -2051,7 +2051,8 @@ $ ./foo.sh
 
 You may need:
 
-- `base64`
+- `base64` - to encode and decode the archive as a Base64 representation;
+- `read -rd '' contents <<EOF` - to read a multiline string.
 
 ## Task: find and open
 
@@ -2272,9 +2273,9 @@ $ goto foo
 # Using non-existent bookmark should return an errorcode and print an error to stderr
 $ goto asd 
 
-# List all bookmarks
+# List all bookmarks - `ls ~/.goto`
 $ goto
 ```
-Bookmarks can be implemented as symbolic links in the `~/.goto` directory.
+Bookmarks can be implemented as symbolic links (`ln -s $DIR $BOOKMARK`) in the `~/.goto` directory.
 
 # Thank you
