@@ -90,15 +90,15 @@ body { font-family: "TietoevrySans1-Light", sans-serif; }
 
 .level2::after {
     content: "Public";
-    background: url(tegray.svg);
+    background: url(tegray.svg), url(cc.png);
     background-repeat: no-repeat;
-    background-position: left 0% bottom 0%;
+    background-position: left 0% bottom 0%, left 100% bottom 0%;
     padding-left: 10em;
     width: 10%;
     font-size: 0.4em;
     color: #aaa;
     margin-bottom: 2em;
-    background-size: 30% 100%;
+    background-size: 30% 100%, contain;
     bottom: 0;
     position: absolute;
 }
