@@ -2279,3 +2279,7 @@ $ goto
 Bookmarks can be implemented as symbolic links (`ln -s $DIR $BOOKMARK`) in the `~/.goto` directory.
 
 # Thank you
+
+## LICENSE
+
+This work is licensed under Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
